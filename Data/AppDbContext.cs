@@ -9,6 +9,10 @@ namespace GestionDeMisiones.Data
 
         // Aquí defines tus tablas como DbSet
         public DbSet<Hechicero> Hechiceros { get; set; }
+ 
+        public DbSet<Ubicacion> Ubicaciones { get; set; }
+
         public DbSet<Maldicion > Maldiciones { get; set; } 
+
     }
 }
