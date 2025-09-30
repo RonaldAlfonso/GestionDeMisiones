@@ -8,6 +8,7 @@ namespace GestionDeMisiones.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         // Aquí defines tus tablas como DbSet
-         public DbSet<Hechicero> Hechiceros { get; set; }
+        public DbSet<Hechicero> Hechiceros { get; set; }
+        public DbSet<Ubicacion> Ubicaciones { get; set; }
     }
 }
