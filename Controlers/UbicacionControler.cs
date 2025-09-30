@@ -42,6 +42,7 @@ public class UbicacionController : ControllerBase
         {
             return BadRequest("La descripcion de la ubicacion no cumple un formato correcto");
         }
+        ubicacion.Id = 0;
         await _context.Ubicaciones.AddAsync(ubicacion);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetUbicacion), new { id = ubicacion.Id}, ubicacion);
@@ -61,10 +62,6 @@ public class UbicacionController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult<Ubicacion>> PutUbicacion(int id, Ubicacion ubicacion)
     {
-        if (id != ubicacion.Id)
-        {
-            return BadRequest("El ID de la URL no coincide con el ID del objeto");
-        }
         var ubicacionExistente = await _context.Ubicaciones.FindAsync(id);
         if (ubicacionExistente == null)
         {
