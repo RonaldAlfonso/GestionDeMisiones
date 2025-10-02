@@ -28,7 +28,7 @@ public class UbicacionController : ControllerBase
     [HttpGet("{id}")]
     public ActionResult<Ubicacion> GetUbicacion(int id)
     {
-        var ubicacion = _context.ubicacion.Find(id);
+        var ubicacion = _context.Ubicaciones.Find(id);
         if(ubicacion == null)
         {
             return NotFound("La ubicacion dada no existe en la base de datos");
@@ -38,7 +38,7 @@ public class UbicacionController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Ubicacion>> PostUbicacion([FromBody] Ubicacion ubicacion)
     {
-        if (!ModelState.IsValid())
+        if (!ModelState.IsValid)
         {
             return BadRequest("La descripcion de la ubicacion no cumple un formato correcto");
         }
