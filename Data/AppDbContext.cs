@@ -16,6 +16,7 @@ namespace GestionDeMisiones.Data
         public DbSet<Traslado> Traslados { get; set; }
 
         public DbSet<TecnicaMaldita> TecnicasMalditas { get; set; }
+        public DbSet<PersonalDeApoyo> PersonalDeApoyo{ get; set; } 
         
 
     }
