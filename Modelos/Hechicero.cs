@@ -1,19 +1,22 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GestionDeMisiones.Models;
 
 public class Hechicero
 {
     [Key]
-    public int idH{ get; set; }
+    public int Id{ get; set; }
     [Required]
-    public string name{ get; set; }
+    public string Name{ get; set; }
 
-    public EGrados grado{ get; set; }
+    public EGrados Grado{ get; set; }
 
-    public int experiencia{ get; set; }
+    public int Experiencia{ get; set; }
 
-    public EEstado estado{ get; set; }
+    public EEstado Estado { get; set; }
+    [AllowNull]
+    public TecnicaMaldita TecnicaPrincipal{ get; set; }
 
 
 
