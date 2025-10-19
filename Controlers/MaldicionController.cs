@@ -4,6 +4,7 @@ using GestionDeMisiones.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace GestionDeMisiones.Controllers;
 
@@ -20,12 +21,12 @@ public class MaldicionController : ControllerBase
     [HttpGet]
     public ActionResult<IEnumerable<Maldicion>> GetAllMalditions()
     {
-        return Ok(_context.Maldiciones.ToList());
+        return Ok(_context.Maldiciones.Include(h=>h.UbicacionDeAparicion).ToList());
     }
     [HttpGet("{id}")]
     public ActionResult<Maldicion> GetMaldition(int id)
     {
-        var maldition = _context.Maldiciones.Find(id);
+        var maldition = _context.Maldiciones.Include(h=>h.UbicacionDeAparicion).FirstOrDefault(x=>x.Id==id);
         if (maldition == null)
         {
             return NotFound("La maldicion que buscas no existe");
