@@ -10,5 +10,6 @@ public class Ubicacion
     [Required]
     public string Nombre { get; set; }
     
+    [JsonIgnore]
     public ICollection<Mision>? Misiones { get; set; }
 }
