@@ -19,6 +19,7 @@ namespace GestionDeMisiones.Data
         public DbSet<PersonalDeApoyo> PersonalDeApoyo { get; set; } 
         public DbSet<Solicitud> Solicitud{ get; set; }
         public DbSet<Mision> Misiones { get; set; }
+        public DbSet<Recurso> Recursos { get; set; }
 
 
 
