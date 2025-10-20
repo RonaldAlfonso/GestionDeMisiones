@@ -20,7 +20,10 @@ public class Maldicion
     [Required]
     public EEstadoActual EstadoActual { get; set; }
     [Required]
-    public  ENivelPeligro NivelPeligro { get; set; }
+    public ENivelPeligro NivelPeligro { get; set; }
+
+    [Required]
+    public Ubicacion UbicacionDeAparicion{ get; set; }
 
 
 
