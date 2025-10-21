@@ -4,6 +4,7 @@ using GestionDeMisiones.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestionDeMisiones.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251020235214_AddRecursoModel")]
+    partial class AddRecursoModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -262,38 +265,6 @@ namespace GestionDeMisiones.Migrations
                     b.ToTable("Ubicaciones");
                 });
 
-            modelBuilder.Entity("GestionDeMisiones.Models.UsoDeRecurso", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("FechaFin")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("FechaInicio")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("MisionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Observaciones")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RecursoId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MisionId");
-
-                    b.HasIndex("RecursoId");
-
-                    b.ToTable("UsosDeRecurso");
-                });
-
             modelBuilder.Entity("GestionDeMisiones.Models.Hechicero", b =>
                 {
                     b.HasOne("GestionDeMisiones.Models.TecnicaMaldita", "TecnicaPrincipal")
@@ -355,35 +326,6 @@ namespace GestionDeMisiones.Migrations
                     b.Navigation("Destino");
 
                     b.Navigation("Origen");
-                });
-
-            modelBuilder.Entity("GestionDeMisiones.Models.UsoDeRecurso", b =>
-                {
-                    b.HasOne("GestionDeMisiones.Models.Mision", "Mision")
-                        .WithMany("UsosDeRecurso")
-                        .HasForeignKey("MisionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GestionDeMisiones.Models.Recurso", "Recurso")
-                        .WithMany("UsosDeRecurso")
-                        .HasForeignKey("RecursoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Mision");
-
-                    b.Navigation("Recurso");
-                });
-
-            modelBuilder.Entity("GestionDeMisiones.Models.Mision", b =>
-                {
-                    b.Navigation("UsosDeRecurso");
-                });
-
-            modelBuilder.Entity("GestionDeMisiones.Models.Recurso", b =>
-                {
-                    b.Navigation("UsosDeRecurso");
                 });
 
             modelBuilder.Entity("GestionDeMisiones.Models.Ubicacion", b =>

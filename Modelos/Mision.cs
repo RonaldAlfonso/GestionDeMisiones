@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace GestionDeMisiones.Models;
 
@@ -37,6 +38,9 @@ public class Mision
     [Range(0, 2, ErrorMessage = "Nivel de urgencia no valido")]
     public ENivelUrgencia NivelUrgencia { get; set; }
 
+    [JsonIgnore]
+    public ICollection<UsoDeRecurso> UsosDeRecurso { get; set; } = [];
+    
 
 
     public enum EEstadoMision
