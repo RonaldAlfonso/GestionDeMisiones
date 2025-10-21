@@ -18,7 +18,16 @@ namespace GestionDeMisiones.Data
         public DbSet<TecnicaMaldita> TecnicasMalditas { get; set; }
         public DbSet<PersonalDeApoyo> PersonalDeApoyo { get; set; } 
         public DbSet<Solicitud> Solicitud{ get; set; }
-        
+        public DbSet<Mision> Misiones { get; set; }
 
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Mision>()
+                .HasOne(m => m.Ubicacion)
+                .WithMany(u => u.Misiones)
+                .HasForeignKey(m => m.UbicacionId);
+        }
     }
 }
