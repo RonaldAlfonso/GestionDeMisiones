@@ -20,6 +20,7 @@ namespace GestionDeMisiones.Data
         public DbSet<Solicitud> Solicitud{ get; set; }
         public DbSet<Mision> Misiones { get; set; }
         public DbSet<Recurso> Recursos { get; set; }
+        public DbSet<UsoDeRecurso> UsosDeRecurso { get; set; } 
 
 
 
@@ -29,6 +30,16 @@ namespace GestionDeMisiones.Data
                 .HasOne(m => m.Ubicacion)
                 .WithMany(u => u.Misiones)
                 .HasForeignKey(m => m.UbicacionId);
+
+            modelBuilder.Entity<UsoDeRecurso>()
+                .HasOne(ur => ur.Mision)
+                .WithMany(m => m.UsosDeRecurso)
+                .HasForeignKey(ur => ur.MisionId);
+
+            modelBuilder.Entity<UsoDeRecurso>()
+                .HasOne(ur => ur.Recurso)
+                .WithMany(r => r.UsosDeRecurso)
+                .HasForeignKey(ur => ur.RecursoId);
         }
     }
 }

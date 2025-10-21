@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace GestionDeMisiones.Models;
 
@@ -11,6 +12,9 @@ public class Recurso
     public ETipoRecurso TipoRecurso { get; set; }
 
     public string? Descripcion { get; set; } = "";
+
+    [JsonIgnore]
+    public ICollection<UsoDeRecurso> UsosDeRecurso { get; set; } = [];
 
     public enum ETipoRecurso
     {
