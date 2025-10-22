@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace GestionDeMisiones.Models;
@@ -26,6 +27,8 @@ public class Traslado
     public int MisionId { get; set; }
     public Mision? Mision { get; set; }
 
+    [JsonIgnore]
+    public ICollection<Hechicero> Hechiceros { get; set; } = [];
 
 
 
