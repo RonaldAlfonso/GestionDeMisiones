@@ -22,6 +22,9 @@ public class Traslado
    [Required][DeleteBehavior(DeleteBehavior.Restrict)]
     public Ubicacion Destino{ get; set; }    
 
+    [Required]
+    public int MisionId { get; set; }
+    public Mision? Mision { get; set; }
 
 
 
