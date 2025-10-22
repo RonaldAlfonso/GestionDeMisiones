@@ -40,7 +40,11 @@ namespace GestionDeMisiones.Data
                 .HasOne(ur => ur.Recurso)
                 .WithMany(r => r.UsosDeRecurso)
                 .HasForeignKey(ur => ur.RecursoId);
-            
+
+            modelBuilder.Entity<Traslado>()
+                .HasOne(tr => tr.Mision)
+                .WithMany(m => m.Traslados)
+                .HasForeignKey(tr => tr.MisionId);
         }
     }
 }

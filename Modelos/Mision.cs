@@ -40,6 +40,9 @@ public class Mision
 
     [JsonIgnore]
     public ICollection<UsoDeRecurso> UsosDeRecurso { get; set; } = [];
+
+    [JsonIgnore]
+    public ICollection<Traslado> Traslados { get; set; } = [];
     
 
 

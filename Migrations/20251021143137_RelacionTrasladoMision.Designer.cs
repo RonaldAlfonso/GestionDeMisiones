@@ -4,6 +4,7 @@ using GestionDeMisiones.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestionDeMisiones.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251021143137_RelacionTrasladoMision")]
+    partial class RelacionTrasladoMision
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,34 +54,6 @@ namespace GestionDeMisiones.Migrations
                     b.HasIndex("TecnicaPrincipalId");
 
                     b.ToTable("Hechiceros");
-                });
-
-            modelBuilder.Entity("GestionDeMisiones.Models.HechiceroEncargado", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("HechiceroId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MisionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SolicitudId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("HechiceroId");
-
-                    b.HasIndex("MisionId");
-
-                    b.HasIndex("SolicitudId");
-
-                    b.ToTable("HechiceroEncargado");
                 });
 
             modelBuilder.Entity("GestionDeMisiones.Models.Maldicion", b =>
@@ -336,33 +311,6 @@ namespace GestionDeMisiones.Migrations
                         .IsRequired();
 
                     b.Navigation("TecnicaPrincipal");
-                });
-
-            modelBuilder.Entity("GestionDeMisiones.Models.HechiceroEncargado", b =>
-                {
-                    b.HasOne("GestionDeMisiones.Models.Hechicero", "Hechicero")
-                        .WithMany()
-                        .HasForeignKey("HechiceroId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GestionDeMisiones.Models.Mision", "Mision")
-                        .WithMany()
-                        .HasForeignKey("MisionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GestionDeMisiones.Models.Solicitud", "Solicitud")
-                        .WithMany()
-                        .HasForeignKey("SolicitudId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Hechicero");
-
-                    b.Navigation("Mision");
-
-                    b.Navigation("Solicitud");
                 });
 
             modelBuilder.Entity("GestionDeMisiones.Models.Maldicion", b =>
