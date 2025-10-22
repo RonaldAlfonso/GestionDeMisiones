@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace GestionDeMisiones.Models;
 
@@ -12,6 +13,9 @@ public class TecnicaMaldita
     public ETipoTecnica Tipo { get; set; }
     public int EfectividadProm { get; set; } = 0;
     public string CondicionesDeUso { get; set; } = "ninguna";
+    
+    [JsonIgnore]
+    public ICollection<TecnicaMalditaAplicada> Misiones { get; set; } = [];
 
 
     public enum ETipoTecnica

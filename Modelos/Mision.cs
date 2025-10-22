@@ -1,3 +1,4 @@
+using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -43,6 +44,11 @@ public class Mision
 
     [JsonIgnore]
     public ICollection<Traslado> Traslados { get; set; } = [];
+
+    [JsonIgnore]
+    public ICollection<HechiceroEnMision> Hechiceros { get; set; } = [];
+    [JsonIgnore]
+    public ICollection<TecnicaMalditaAplicada> Tecnicas { get; set; } = [];
     
 
 

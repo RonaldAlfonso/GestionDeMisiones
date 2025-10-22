@@ -17,7 +17,10 @@ public class Hechicero
 
     public EEstado Estado { get; set; }
     [AllowNull]
-    public TecnicaMaldita TecnicaPrincipal{ get; set; }
+    public TecnicaMaldita TecnicaPrincipal { get; set; }
+
+    [JsonIgnore]
+    public ICollection<HechiceroEnMision> Misiones { get; set; } = [];
 
     [JsonIgnore]
     public ICollection<Traslado> Traslados { get; set; } = [];
