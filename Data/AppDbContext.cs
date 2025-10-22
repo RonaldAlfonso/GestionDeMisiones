@@ -45,6 +45,11 @@ namespace GestionDeMisiones.Data
                 .HasOne(tr => tr.Mision)
                 .WithMany(m => m.Traslados)
                 .HasForeignKey(tr => tr.MisionId);
+
+            modelBuilder.Entity<Traslado>()
+                .HasMany(tr => tr.Hechiceros)
+                .WithMany(h => h.Traslados)
+                .UsingEntity(t => t.ToTable("TrasladoDeHechicero"));
         }
     }
 }

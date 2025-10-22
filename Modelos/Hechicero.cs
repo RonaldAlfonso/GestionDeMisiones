@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace GestionDeMisiones.Models;
 
@@ -18,6 +19,8 @@ public class Hechicero
     [AllowNull]
     public TecnicaMaldita TecnicaPrincipal{ get; set; }
 
+    [JsonIgnore]
+    public ICollection<Traslado> Traslados { get; set; } = [];
 
 
     public enum EEstado
