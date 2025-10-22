@@ -25,6 +25,8 @@ public class Hechicero
     [JsonIgnore]
     public ICollection<Traslado> Traslados { get; set; } = [];
 
+    [JsonIgnore]
+    public ICollection<TecnicaMalditaDominada> TecnicasMalditasDominadas { get; set; } = [];
 
     public enum EEstado
     {

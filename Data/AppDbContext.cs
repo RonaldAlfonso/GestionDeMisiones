@@ -25,6 +25,7 @@ namespace GestionDeMisiones.Data
         public DbSet<HechiceroEnMision> HechiceroEnMision { get; set; }
         public DbSet<TecnicaMalditaAplicada>TecnicaMalditaAplicada{ get; set; }
 
+        public DbSet<TecnicaMalditaDominada> TecnicasMalditasDominadas { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -69,6 +70,17 @@ namespace GestionDeMisiones.Data
                 .HasOne(tm => tm.Mision)
                 .WithMany(m => m.Tecnicas)
                 .HasForeignKey(tm => tm.MisionId);
+
+            modelBuilder.Entity<TecnicaMalditaDominada>()
+                .HasOne(tmd => tmd.Hechicero)
+                .WithMany(h => h.TecnicasMalditasDominadas)
+                .HasForeignKey(tmd => tmd.HechiceroId);
+
+            modelBuilder.Entity<TecnicaMalditaDominada>()
+                .HasOne(tmd => tmd.TecnicaMaldita)
+                .WithMany(tm => tm.TecnicasMalditasDominadas)
+                .HasForeignKey(tmd => tmd.TecnicaMalditaId);
+
         }
     }
 }
