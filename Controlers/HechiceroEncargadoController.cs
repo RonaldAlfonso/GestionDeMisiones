@@ -35,7 +35,7 @@ public class HechiceroEncargadoController:ControllerBase
         }
         return Ok(hechiceroEncargado);
     }
-    [HttpPatch]
+    [HttpPost]
     public async Task<ActionResult<HechiceroEncargado>> PatchHechiceroEncargado([FromBody] HechiceroEncargado hechiceroEncargado)
     {
         if (!ModelState.IsValid)
