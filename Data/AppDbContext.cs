@@ -21,7 +21,7 @@ namespace GestionDeMisiones.Data
         public DbSet<Mision> Misiones { get; set; }
         public DbSet<Recurso> Recursos { get; set; }
         public DbSet<UsoDeRecurso> UsosDeRecurso { get; set; } 
-
+        public DbSet<HechiceroEncargado>HechiceroEncargado{ get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

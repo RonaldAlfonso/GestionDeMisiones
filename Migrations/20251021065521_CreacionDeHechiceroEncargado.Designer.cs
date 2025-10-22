@@ -4,6 +4,7 @@ using GestionDeMisiones.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestionDeMisiones.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251021065521_CreacionDeHechiceroEncargado")]
+    partial class CreacionDeHechiceroEncargado
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -257,9 +260,6 @@ namespace GestionDeMisiones.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("MisionId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Motivo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -270,8 +270,6 @@ namespace GestionDeMisiones.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DestinoId");
-
-                    b.HasIndex("MisionId");
 
                     b.HasIndex("OrigenId");
 
@@ -406,12 +404,6 @@ namespace GestionDeMisiones.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("GestionDeMisiones.Models.Mision", "Mision")
-                        .WithMany("Traslados")
-                        .HasForeignKey("MisionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("GestionDeMisiones.Models.Ubicacion", "Origen")
                         .WithMany()
                         .HasForeignKey("OrigenId")
@@ -419,8 +411,6 @@ namespace GestionDeMisiones.Migrations
                         .IsRequired();
 
                     b.Navigation("Destino");
-
-                    b.Navigation("Mision");
 
                     b.Navigation("Origen");
                 });
@@ -446,8 +436,6 @@ namespace GestionDeMisiones.Migrations
 
             modelBuilder.Entity("GestionDeMisiones.Models.Mision", b =>
                 {
-                    b.Navigation("Traslados");
-
                     b.Navigation("UsosDeRecurso");
                 });
 
