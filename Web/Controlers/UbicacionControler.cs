@@ -1,74 +1,59 @@
 using Microsoft.AspNetCore.Mvc;
 using GestionDeMisiones.Models;
-using GestionDeMisiones.Data;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using GestionDeMisiones.IService;
 
-using Microsoft.EntityFrameworkCore;
-
-namespace GestionDeMisiones.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-
-public class UbicacionController : ControllerBase
+namespace GestionDeMisiones.Controllers
 {
-    private readonly AppDbContext _context;
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UbicacionController : ControllerBase
+    {
+        private readonly IUbicacionService _service;
 
-    public UbicacionController(AppDbContext context)
-    {
-        _context = context;
-    }
+        public UbicacionController(IUbicacionService service)
+        {
+            _service = service;
+        }
 
-    [HttpGet]
-    public ActionResult<IEnumerable<Ubicacion>> GetAllUbicacion()
-    {
-        return Ok(_context.Ubicaciones.ToList());
-    }
-    [HttpGet("{id}")]
-    public ActionResult<Ubicacion> GetUbicacion(int id)
-    {
-        var ubicacion = _context.Ubicaciones.Find(id);
-        if(ubicacion == null)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Ubicacion>>> GetAll()
         {
-            return NotFound("La ubicacion dada no existe en la base de datos");
+            var ubicaciones = await _service.GetAllAsync();
+            return Ok(ubicaciones);
         }
-        return Ok(ubicacion);
-    }
-    [HttpPost]
-    public async Task<ActionResult<Ubicacion>> PostUbicacion([FromBody] Ubicacion ubicacion)
-    {
-        if (!ModelState.IsValid)
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Ubicacion>> GetById(int id)
         {
-            return BadRequest("La descripcion de la ubicacion no cumple un formato correcto");
+            var ubicacion = await _service.GetByIdAsync(id);
+            if (ubicacion == null) return NotFound("La ubicación no existe.");
+            return Ok(ubicacion);
         }
-        ubicacion.Id = 0;
-        await _context.Ubicaciones.AddAsync(ubicacion);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetUbicacion), new { id = ubicacion.Id}, ubicacion);
-    }
-    [HttpDelete("{id}")]
-    public async Task<ActionResult<Ubicacion>> DeleteUbicacion(int id)
-    {
-        var ubicacion = await _context.Ubicaciones.FindAsync(id);
-        if (ubicacion == null)
+
+        [HttpPost]
+        public async Task<ActionResult<Ubicacion>> Create([FromBody] Ubicacion ubicacion)
         {
-            return NotFound("La ubicacion dada no existe en la base de datos");
+            if (!ModelState.IsValid)
+                return BadRequest("Ubicación inválida.");
+
+            var nueva = await _service.AddAsync(ubicacion);
+            return CreatedAtAction(nameof(GetById), new { id = nueva.Id }, nueva);
         }
-        _context.Ubicaciones.Remove(ubicacion);
-        await _context.SaveChangesAsync();
-        return Ok();
-    }
-    [HttpPut("{id}")]
-    public async Task<ActionResult<Ubicacion>> PutUbicacion(int id, Ubicacion ubicacion)
-    {
-        var ubicacionExistente = await _context.Ubicaciones.FindAsync(id);
-        if (ubicacionExistente == null)
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            return NotFound("La ubicacion dada no existe en la base de datos");
+            var eliminado = await _service.DeleteAsync(id);
+            if (!eliminado) return NotFound("No se encontró la ubicación.");
+            return NoContent();
         }
-        ubicacionExistente.Nombre = ubicacion.Nombre;
-        await _context.SaveChangesAsync();
-        return Ok();
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] Ubicacion ubicacion)
+        {
+            var actualizado = await _service.UpdateAsync(id, ubicacion);
+            if (actualizado == null) return NotFound("No se encontró la ubicación.");
+            return Ok(actualizado);
+        }
     }
 }

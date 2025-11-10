@@ -22,6 +22,12 @@ builder.Services.AddScoped<IHechiceroRepository, HechiceroRepository>();
 builder.Services.AddScoped<IHechiceroService, HechiceroService>();
 builder.Services.AddScoped<ITrasladoRepository, TrasladoRepository>();
 builder.Services.AddScoped<ITrasladoService, TrasladoService>();
+builder.Services.AddScoped<IHechiceroEncargadoRepository, HechiceroEncargadoRepository>();
+builder.Services.AddScoped<IHechiceroEncargadoService, HechiceroEncargadoService>();
+builder.Services.AddScoped<IUbicacionRepository, UbicacionRepository>();
+builder.Services.AddScoped<IUbicacionService, UbicacionService>();
+builder.Services.AddScoped<IUsoDeRecursoRepository, UsoDeRecursoRepository>();
+builder.Services.AddScoped<IUsoDeRecursoService, UsoDeRecursoService>();
 
 
 var app = builder.Build();
