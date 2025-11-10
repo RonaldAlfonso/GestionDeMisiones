@@ -1,83 +1,78 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using GestionDeMisiones.Models;
-using GestionDeMisiones.Data;
-
-namespace GestionDeMisiones.Controllers;
+using GestionDeMisiones.IService;
 
 [ApiController]
 [Route("api/[controller]")]
 public class MisionController : ControllerBase
 {
-    private readonly AppDbContext _context;
-    public MisionController(AppDbContext context)
+    private readonly IMisionService _service;
+
+    public MisionController(IMisionService service)
     {
-        _context = context;
+        _service = service;
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<Mision>> GetAllMision()
+    public async Task<ActionResult<IEnumerable<Mision>>> GetAllMision()
     {
-        return Ok(_context.Misiones.Include(m => m.Ubicacion).ToList());
+        var misiones = await _service.GetAllAsync();
+        return Ok(misiones);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Mision> GetMision(int id)
+    public async Task<ActionResult<Mision>> GetMision(int id)
     {
-        var mision = _context.Misiones.Include(m => m.Ubicacion).FirstOrDefault(x => x.Id == id);
-        if (mision == null) return NotFound("La maldicion dada no existe");
+        var mision = await _service.GetByIdAsync(id);
+        if (mision == null)
+            return NotFound("La misión que buscas no existe");
         return Ok(mision);
     }
 
     [HttpPost]
     public async Task<ActionResult<Mision>> PostMision([FromBody] Mision mision)
     {
-        if (!ModelState.IsValid) return BadRequest("La mision dada no cumple el formato");
-        if (mision.FechaYHoraDeFin.HasValue &&
-            mision.FechaYHoraDeFin <= mision.FechaYHoraDeInicio)
+        if (!ModelState.IsValid)
+            return BadRequest("La misión no cumple el formato");
+
+        try
         {
-            return BadRequest("La fecha de fin debe ser posterior a la de inicio");
+            var created = await _service.CreateAsync(mision);
+            return CreatedAtAction(nameof(GetMision), new { id = created.Id }, created);
         }
-
-        mision.Id = 0;
-        await _context.Misiones.AddAsync(mision);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetMision), new { id = mision.Id }, mision);
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<ActionResult<Mision>> DeleteMision(int id)
-    {
-        var mision = await _context.Misiones.FindAsync(id);
-        if (mision == null) return NotFound("La mision dada no existe");
-        _context.Misiones.Remove(mision);
-        await _context.SaveChangesAsync();
-        return NoContent();
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<Mision>> PutMision([FromRoute] int id, [FromBody] Mision mision)
-    {   
-        if (!ModelState.IsValid) return BadRequest("La mision dada no cumple el formato");
-        var _mision = await _context.Misiones.FindAsync(id);
-        if (_mision == null) return NotFound("La mision que se quiere modificar no existe");
-        var _ubicacion = await _context.Ubicaciones.FindAsync(mision.UbicacionId);
-        if (_ubicacion == null) return BadRequest("La ubicacion de la mision dada no existe");
-        if (mision.FechaYHoraDeFin.HasValue &&
-            mision.FechaYHoraDeFin <= mision.FechaYHoraDeInicio)
+    public async Task<IActionResult> PutMision(int id, [FromBody] Mision mision)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest("La misión no cumple el formato");
+
+        try
         {
-            return BadRequest("La fecha de fin debe ser posterior a la de inicio");
+            var updated = await _service.UpdateAsync(id, mision);
+            if (!updated)
+                return NotFound("La misión que quiere modificar no existe");
+
+            return NoContent();
         }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 
-        _mision.DannosColaterales = mision.DannosColaterales;
-        _mision.Estado = mision.Estado;
-        _mision.EventosOcurridos = mision.EventosOcurridos;
-        _mision.FechaYHoraDeInicio = mision.FechaYHoraDeInicio;
-        _mision.FechaYHoraDeFin = mision.FechaYHoraDeFin;
-        _mision.NivelUrgencia = mision.NivelUrgencia;
-        _mision.UbicacionId = mision.UbicacionId;
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteMision(int id)
+    {
+        var deleted = await _service.DeleteAsync(id);
+        if (!deleted)
+            return NotFound("La misión que quiere eliminar no existe");
 
-        await _context.SaveChangesAsync();
-        return Ok();
+        return NoContent();
     }
 }
