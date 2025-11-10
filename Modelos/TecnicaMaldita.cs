@@ -17,6 +17,9 @@ public class TecnicaMaldita
     [JsonIgnore]
     public ICollection<TecnicaMalditaAplicada> Misiones { get; set; } = [];
 
+    [JsonIgnore]
+    public ICollection<TecnicaMalditaDominada> TecnicasMalditasDominadas { get; set; } = [];
+
 
     public enum ETipoTecnica
     {
