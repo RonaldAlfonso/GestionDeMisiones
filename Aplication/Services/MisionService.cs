@@ -1,27 +1,25 @@
 using GestionDeMisiones.Models;
 using GestionDeMisiones.IService;
 using GestionDeMisiones.IRepository;
-using Microsoft.EntityFrameworkCore;
-using GestionDeMisiones.Data;
 
 namespace GestionDeMisiones.Service;
 
 public class MisionService : IMisionService
 {
-    private readonly IMisionRepository _repo;
-    private readonly AppDbContext _context;
+    private readonly IMisionRepository _misionRepo;
+    private readonly IUbicacionRepository _ubicacionRepo;
 
-    public MisionService(IMisionRepository repo, AppDbContext context)
+    public MisionService(IMisionRepository misionRepo, IUbicacionRepository ubicacionRepo)
     {
-        _repo = repo;
-        _context = context;
+        _misionRepo = misionRepo;
+        _ubicacionRepo = ubicacionRepo;
     }
 
     public async Task<IEnumerable<Mision>> GetAllAsync()
-        => await _repo.GetAllAsync();
+        => await _misionRepo.GetAllAsync();
 
     public async Task<Mision?> GetByIdAsync(int id)
-        => await _repo.GetByIdAsync(id);
+        => await _misionRepo.GetByIdAsync(id);
 
     public async Task<Mision> CreateAsync(Mision mision)
     {
@@ -30,25 +28,23 @@ public class MisionService : IMisionService
             mision.FechaYHoraDeFin <= mision.FechaYHoraDeInicio)
             throw new ArgumentException("La fecha de fin debe ser posterior a la de inicio");
 
-        // Validar que la ubicación existe
-        var ubicacionExists = await _context.Ubicaciones
-            .AnyAsync(u => u.Id == mision.UbicacionId);
-        if (!ubicacionExists)
+        // Validar que la ubicación existe usando GetByIdAsync
+        var ubicacionExistente = await _ubicacionRepo.GetByIdAsync(mision.UbicacionId);
+        if (ubicacionExistente == null)
             throw new ArgumentException("La ubicación especificada no existe");
 
-        return await _repo.AddAsync(mision);
+        return await _misionRepo.AddAsync(mision);
     }
 
     public async Task<bool> UpdateAsync(int id, Mision mision)
     {
-        var existing = await _repo.GetByIdAsync(id);
+        var existing = await _misionRepo.GetByIdAsync(id);
         if (existing == null)
             return false;
 
-        // Validar que la ubicación existe
-        var ubicacionExists = await _context.Ubicaciones
-            .AnyAsync(u => u.Id == mision.UbicacionId);
-        if (!ubicacionExists)
+        // Validar que la ubicación existe usando GetByIdAsync
+        var ubicacionExistente = await _ubicacionRepo.GetByIdAsync(mision.UbicacionId);
+        if (ubicacionExistente == null)
             throw new ArgumentException("La ubicación especificada no existe");
 
         // Validación de fechas
@@ -65,17 +61,17 @@ public class MisionService : IMisionService
         existing.DannosColaterales = mision.DannosColaterales;
         existing.NivelUrgencia = mision.NivelUrgencia;
 
-        await _repo.UpdateAsync(existing);
+        await _misionRepo.UpdateAsync(existing);
         return true;
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        var existing = await _repo.GetByIdAsync(id);
+        var existing = await _misionRepo.GetByIdAsync(id);
         if (existing == null)
             return false;
 
-        await _repo.DeleteAsync(existing);
+        await _misionRepo.DeleteAsync(existing);
         return true;
     }
 }
