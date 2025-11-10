@@ -579,11 +579,8 @@ namespace GestionDeMisiones.Migrations
 
             modelBuilder.Entity("GestionDeMisiones.Models.TecnicaMaldita", b =>
                 {
-<<<<<<< HEAD
                     b.Navigation("Misiones");
-=======
                     b.Navigation("TecnicasMalditasDominadas");
->>>>>>> ab416fc (Annadiendo modelo y controlador de la relacion Hechicero Dominar Tecnica Maldita)
                 });
 
             modelBuilder.Entity("GestionDeMisiones.Models.Ubicacion", b =>
