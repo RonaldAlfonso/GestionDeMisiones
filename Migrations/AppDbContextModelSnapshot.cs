@@ -363,32 +363,6 @@ namespace GestionDeMisiones.Migrations
                     b.ToTable("TrasladoDeHechicero", (string)null);
                 });
 
-            modelBuilder.Entity("TecnicaMalditaDominada", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("HechiceroId")
-                        .HasColumnType("int");
-
-                    b.Property<float>("NivelDeDominio")
-                        .HasColumnType("real");
-
-                    b.Property<int>("TecnicaMalditaId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("HechiceroId");
-
-                    b.HasIndex("TecnicaMalditaId");
-
-                    b.ToTable("TecnicasMalditasDominadas");
-                });
-
             modelBuilder.Entity("GestionDeMisiones.Models.Hechicero", b =>
                 {
                     b.HasOne("GestionDeMisiones.Models.TecnicaMaldita", "TecnicaPrincipal")
@@ -535,30 +509,6 @@ namespace GestionDeMisiones.Migrations
             modelBuilder.Entity("GestionDeMisiones.Models.Hechicero", b =>
                 {
                     b.Navigation("Misiones");
-                });
-
-            modelBuilder.Entity("TecnicaMalditaDominada", b =>
-                {
-                    b.HasOne("GestionDeMisiones.Models.Hechicero", "Hechicero")
-                        .WithMany("TecnicasMalditasDominadas")
-                        .HasForeignKey("HechiceroId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GestionDeMisiones.Models.TecnicaMaldita", "TecnicaMaldita")
-                        .WithMany("TecnicasMalditasDominadas")
-                        .HasForeignKey("TecnicaMalditaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Hechicero");
-
-                    b.Navigation("TecnicaMaldita");
-                });
-
-            modelBuilder.Entity("GestionDeMisiones.Models.Hechicero", b =>
-                {
-                    b.Navigation("TecnicasMalditasDominadas");
                 });
 
             modelBuilder.Entity("GestionDeMisiones.Models.Mision", b =>
