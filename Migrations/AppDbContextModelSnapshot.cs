@@ -530,6 +530,7 @@ namespace GestionDeMisiones.Migrations
             modelBuilder.Entity("GestionDeMisiones.Models.TecnicaMaldita", b =>
                 {
                     b.Navigation("Misiones");
+                    b.Navigation("TecnicasMalditasDominadas");
                 });
 
             modelBuilder.Entity("GestionDeMisiones.Models.Ubicacion", b =>
