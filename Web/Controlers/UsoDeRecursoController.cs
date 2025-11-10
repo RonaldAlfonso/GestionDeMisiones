@@ -1,86 +1,83 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using GestionDeMisiones.Models;
-using GestionDeMisiones.Data;
-using System.Collections;
+using GestionDeMisiones.IService;
 
-namespace GestionDeMisiones.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class UsoDeRecursoController : ControllerBase
+namespace GestionDeMisiones.Controllers
 {
-    private readonly AppDbContext _context;
-    public UsoDeRecursoController(AppDbContext context)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UsoDeRecursoController : ControllerBase
     {
-        _context = context;
-    }
+        private readonly IUsoDeRecursoService _service;
 
-    [HttpGet]
-    public ActionResult<IEnumerable<UsoDeRecurso>> GetAllUsoDeRecurso()
-    {
-        return Ok(_context.UsosDeRecurso.Include(u => u.Mision).Include(u => u.Recurso).ToList());
-    }
+        public UsoDeRecursoController(IUsoDeRecursoService service)
+        {
+            _service = service;
+        }
 
-    [HttpGet("{id}")]
-    public ActionResult<UsoDeRecurso> GetUsoDeRecurso(int id)
-    {
-        var usoDeRecurso = _context.UsosDeRecurso.Include(u => u.Mision)
-                        .Include(u => u.Recurso).FirstOrDefault(u => u.Id == id);
-        if (usoDeRecurso == null) return NotFound("El uso de recurso dado no existe");
-        return Ok(usoDeRecurso);
-    }
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UsoDeRecurso>>> GetAll()
+        {
+            var usos = await _service.GetAllAsync();
+            return Ok(usos);
+        }
 
-    [HttpPost]
-    public async Task<ActionResult<UsoDeRecurso>> PostUsoDeRecurso([FromBody] UsoDeRecurso usoDeRecurso)
-    {
-        if (!ModelState.IsValid) return BadRequest("El uso de recurso dado no cumple el formato");
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UsoDeRecurso>> GetById(int id)
+        {
+            var uso = await _service.GetByIdAsync(id);
+            if (uso == null)
+                return NotFound("El uso de recurso dado no existe");
 
-        bool enUso = _context.UsosDeRecurso.Any(u =>
-            u.RecursoId == usoDeRecurso.RecursoId &&
-            (usoDeRecurso.FechaFin == null
-                ? u.FechaFin == null || usoDeRecurso.FechaInicio < u.FechaFin
-                : usoDeRecurso.FechaInicio < u.FechaFin && usoDeRecurso.FechaFin > u.FechaInicio)
-        );
-        if (enUso) return Conflict("El recurso ya esta asignado en ese tiempo");
+            return Ok(uso);
+        }
 
-        await _context.UsosDeRecurso.AddAsync(usoDeRecurso);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetUsoDeRecurso), new { id = usoDeRecurso.Id }, usoDeRecurso);
-    }
+        [HttpPost]
+        public async Task<ActionResult<UsoDeRecurso>> Post([FromBody] UsoDeRecurso usoDeRecurso)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest("El uso de recurso dado no cumple el formato");
 
-    [HttpDelete("{id}")]
-    public async Task<ActionResult<UsoDeRecurso>> DeleteUsoDeRecurso(int id)
-    {
-        var usoDeRecurso = await _context.UsosDeRecurso.FindAsync(id);
-        if (usoDeRecurso == null) return NotFound("El uso de recurso dado no existe");
-        _context.UsosDeRecurso.Remove(usoDeRecurso);
-        await _context.SaveChangesAsync();
-        return NoContent();
-    }
+            try
+            {
+                var nuevo = await _service.AddAsync(usoDeRecurso);
+                return CreatedAtAction(nameof(GetById), new { id = nuevo.Id }, nuevo);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
+        }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult<UsoDeRecurso>> PutUsoDeRecurso([FromRoute] int id, [FromBody] UsoDeRecurso usoDeRecurso)
-    {
-        var _usoDeRecurso = await _context.UsosDeRecurso.FindAsync(id);
-        if (_usoDeRecurso == null) return NotFound("El uso de recurso a modificar no existe");
-        if (!ModelState.IsValid) return BadRequest("El uso de recurso dado no cumple el formato");
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var eliminado = await _service.DeleteAsync(id);
+            if (!eliminado)
+                return NotFound("El uso de recurso dado no existe");
 
-        bool enUso = _context.UsosDeRecurso.Any(u =>
-            u.RecursoId == usoDeRecurso.RecursoId &&
-            (usoDeRecurso.FechaFin == null
-                ? u.FechaFin == null || usoDeRecurso.FechaInicio < u.FechaFin
-                : usoDeRecurso.FechaInicio < u.FechaFin && usoDeRecurso.FechaFin > u.FechaInicio)
-        );
-        if (enUso) return Conflict("El recurso ya esta asignado en ese tiempo");
+            return NoContent();
+        }
 
-        _usoDeRecurso.MisionId = usoDeRecurso.MisionId;
-        _usoDeRecurso.RecursoId = usoDeRecurso.RecursoId;
-        _usoDeRecurso.FechaInicio = usoDeRecurso.FechaInicio;
-        _usoDeRecurso.FechaFin = usoDeRecurso.FechaFin;
-        _usoDeRecurso.Observaciones = usoDeRecurso.Observaciones;
+        [HttpPut("{id}")]
+        public async Task<ActionResult<UsoDeRecurso>> Put(int id, [FromBody] UsoDeRecurso usoDeRecurso)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest("El uso de recurso dado no cumple el formato");
 
-        await _context.SaveChangesAsync();
-        return Ok();
+            try
+            {
+                var actualizado = await _service.UpdateAsync(id, usoDeRecurso);
+                if (actualizado == null)
+                    return NotFound("El uso de recurso a modificar no existe");
+
+                return Ok(actualizado);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
+        }
     }
 }

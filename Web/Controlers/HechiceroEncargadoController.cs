@@ -1,80 +1,68 @@
 using Microsoft.AspNetCore.Mvc;
+using GestionDeMisiones.IService;
 using GestionDeMisiones.Models;
-using GestionDeMisiones.Data;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace GestionDeMisiones.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class HechiceroEncargadoController:ControllerBase
+namespace GestionDeMisiones.Web.Controllers
 {
-    private readonly AppDbContext _context;
+    [ApiController]
+    [Route("api/[controller]")]
+    public class HechiceroEncargadoController : ControllerBase
+    {
+        private readonly IHechiceroEncargadoService _service;
 
-    public HechiceroEncargadoController(AppDbContext context)
-    {
-        _context = context;
-    }
+        public HechiceroEncargadoController(IHechiceroEncargadoService service)
+        {
+            _service = service;
+        }
 
-    [HttpGet]
-    public ActionResult<IEnumerable<HechiceroEncargado>> GetAllHechiceroEncargado()
-    {
-        return Ok(_context.HechiceroEncargado.Include(h => h.Hechicero).Include(h => h.Mision).Include(h => h.Solicitud).ToList());
-    }
-    [HttpGet("{id}")]
-    public ActionResult<HechiceroEncargado> GetHechiceroEncargadoById(int id)
-    {
-        var hechiceroEncargado = _context.HechiceroEncargado.Include(h=>h.Hechicero).Include(h=>h.Mision).Include(h=>h.Solicitud).FirstOrDefault(x => x.Id == id);
-        if (hechiceroEncargado == null)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<HechiceroEncargado>>> GetAll()
         {
-            return NotFound("El hechicero que buscas no existe");
+            var items = await _service.GetAllAsync();
+            return Ok(items);
         }
-        return Ok(hechiceroEncargado);
-    }
-    [HttpPost]
-    public async Task<ActionResult<HechiceroEncargado>> PatchHechiceroEncargado([FromBody] HechiceroEncargado hechiceroEncargado)
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest("Envie un hechicero encargado valido");
-        }
-        await _context.AddAsync(hechiceroEncargado);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetHechiceroEncargadoById), new { id = hechiceroEncargado.Id }, hechiceroEncargado);
-    }
-    [HttpDelete("{id}")]
-    public async Task<ActionResult<HechiceroEncargado>> DeleteHechiceroEncargado(int id)
-    {
-        var hechiceroEncargado = _context.HechiceroEncargado.FirstOrDefault(x => x.Id == id);
-        if (hechiceroEncargado == null)
-        {
-            return NotFound("El hechicero encargadoquebusca no existe");
-        }
-        _context.HechiceroEncargado.Remove(hechiceroEncargado);
-        await _context.SaveChangesAsync();
-        return NoContent();
-    }
-    [HttpPut("{id}")]
-    public async Task<ActionResult<HechiceroEncargado>> UpdateMaldicion([FromRoute] int id, [FromBody] HechiceroEncargado hechiceroEncargado)
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest("Envie  un hechicero encargado valido valida");
-        }
-        var hechiceroEncargadoOld = await _context.HechiceroEncargado.FindAsync(id);
-        if (hechiceroEncargadoOld == null)
-        {
-            return NotFound("el hechicero encargado que desea editar no existe");
-        }
-        hechiceroEncargadoOld.Hechicero = hechiceroEncargado.Hechicero;
-        hechiceroEncargadoOld.Mision = hechiceroEncargado.Mision;
-        hechiceroEncargadoOld.Solicitud = hechiceroEncargado.Solicitud;
-        await _context.SaveChangesAsync();
-        return NoContent();
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<HechiceroEncargado>> GetById(int id)
+        {
+            var item = await _service.GetByIdAsync(id);
+            if (item == null)
+                return NotFound("El hechicero encargado no existe");
+            return Ok(item);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<HechiceroEncargado>> Create([FromBody] HechiceroEncargado hechiceroEncargado)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest("Hechicero encargado no válido");
+
+            var created = await _service.CreateAsync(hechiceroEncargado);
+            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] HechiceroEncargado hechiceroEncargado)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest("Hechicero encargado no válido");
+
+            var success = await _service.UpdateAsync(id, hechiceroEncargado);
+            if (!success)
+                return NotFound("El hechicero encargado no existe");
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var success = await _service.DeleteAsync(id);
+            if (!success)
+                return NotFound("El hechicero encargado no existe");
+
+            return NoContent();
+        }
     }
-} 
+}
