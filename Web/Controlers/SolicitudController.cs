@@ -1,81 +1,78 @@
 using Microsoft.AspNetCore.Mvc;
 using GestionDeMisiones.Models;
-using GestionDeMisiones.Data;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-using Microsoft.EntityFrameworkCore;
-
-namespace GestionDeMisiones.Controllers;
+using GestionDeMisiones.IService;
 
 [ApiController]
 [Route("api/[controller]")]
-
 public class SolicitudController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly ISolicitudService _service;
 
-    public SolicitudController(AppDbContext context)
+    public SolicitudController(ISolicitudService service)
     {
-        _context = context;
+        _service = service;
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<Solicitud>> GetAllSolicitud()
+    public async Task<ActionResult<IEnumerable<Solicitud>>> GetAllSolicitud()
     {
-        return Ok(_context.Solicitud.Include(h => h.Maldicion).ThenInclude(m=>m.UbicacionDeAparicion).ToList());
+        var solicitudes = await _service.GetAllAsync();
+        return Ok(solicitudes);
     }
-    [HttpGet("{id}")]
-    public ActionResult<Solicitud> GetSolicitudById(int id)
-    {
-        var solicitud = _context.Solicitud.Include(h => h.Maldicion).ThenInclude(m=>m.UbicacionDeAparicion).FirstOrDefault(x => x.Id == id);
-        if (solicitud == null)
-        {
-            return NotFound("La Solicitud que buscas no existe");
 
-        }
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Solicitud>> GetSolicitudById(int id)
+    {
+        var solicitud = await _service.GetByIdAsync(id);
+        if (solicitud == null)
+            return NotFound("La solicitud que buscas no existe");
         return Ok(solicitud);
     }
+
     [HttpPost]
     public async Task<ActionResult<Solicitud>> NewSolicitud([FromBody] Solicitud solicitud)
     {
         if (!ModelState.IsValid)
+            return BadRequest("Envíe una solicitud válida");
+
+        try
         {
-            return BadRequest("Envie una Solicitud valida");
+            var created = await _service.CreateAsync(solicitud);
+            return CreatedAtAction(nameof(GetSolicitudById), new { id = created.Id }, created);
         }
-        solicitud.Id = 0;
-        await _context.Solicitud.AddAsync(solicitud);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetSolicitudById), new { id = solicitud.Id }, solicitud);
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
+
     [HttpPut("{id}")]
-    public async Task<ActionResult<Solicitud>> PutSolicitud(int id, [FromBody] Solicitud newSolicitud)
+    public async Task<IActionResult> PutSolicitud(int id, [FromBody] Solicitud solicitud)
     {
         if (!ModelState.IsValid)
-        {
-            return BadRequest("envie un Solicitud valido");
+            return BadRequest("Envíe una solicitud válida");
 
-        }
-        var solicitud = _context.Solicitud.FirstOrDefault(x => x.Id == id);
-        if (solicitud == null)
+        try
         {
-            return NotFound("El Solicitud que quiere editar no existe");
+            var updated = await _service.UpdateAsync(id, solicitud);
+            if (!updated)
+                return NotFound("La solicitud que quiere editar no existe");
+
+            return NoContent();
         }
-        solicitud.Maldicion = newSolicitud.Maldicion;
-        solicitud.Estado = newSolicitud.Estado;
-        await _context.SaveChangesAsync();
-        return NoContent();
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
+
     [HttpDelete("{id}")]
-    public async Task<ActionResult<Solicitud>> DeleteSolicitud(int id)
+    public async Task<IActionResult> DeleteSolicitud(int id)
     {
-        var solicitud = _context.Solicitud.FirstOrDefault(x => x.Id == id);
-        if (solicitud == null)
-        {
-            return NotFound("La Solicitud que quiere eliminar no existe");
-        }
-        _context.Solicitud.Remove(solicitud);
-        await _context.SaveChangesAsync();
+        var deleted = await _service.DeleteAsync(id);
+        if (!deleted)
+            return NotFound("La solicitud que quiere eliminar no existe");
+
         return NoContent();
     }
 }

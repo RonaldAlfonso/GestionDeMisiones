@@ -1,37 +1,31 @@
 using Microsoft.AspNetCore.Mvc;
 using GestionDeMisiones.Models;
-using GestionDeMisiones.Data;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-
-namespace GestionDeMisiones.Controllers;
+using GestionDeMisiones.IService;
 
 [ApiController]
 [Route("api/[controller]")]
 public class TecnicaMalditaController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly ITecnicaMalditaService _service;
 
-    public TecnicaMalditaController(AppDbContext context)
+    public TecnicaMalditaController(ITecnicaMalditaService service)
     {
-        _context = context;
+        _service = service;
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<TecnicaMaldita>> GetAllTecnicaMaldita()
+    public async Task<ActionResult<IEnumerable<TecnicaMaldita>>> GetAllTecnicaMaldita()
     {
-        return Ok(_context.TecnicasMalditas.ToList());
+        var tecnicas = await _service.GetAllAsync();
+        return Ok(tecnicas);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<TecnicaMaldita> GetTecnicaMaldita(int id)
+    public async Task<ActionResult<TecnicaMaldita>> GetTecnicaMaldita(int id)
     {
-        var tecnica = _context.TecnicasMalditas.Find(id);
+        var tecnica = await _service.GetByIdAsync(id);
         if (tecnica == null)
-        {
-            return NotFound("La técnica maldita dada no existe en la base de datos");
-        }
+            return NotFound("La técnica maldita que buscas no existe");
         return Ok(tecnica);
     }
 
@@ -39,54 +33,46 @@ public class TecnicaMalditaController : ControllerBase
     public async Task<ActionResult<TecnicaMaldita>> PostTecnicaMaldita([FromBody] TecnicaMaldita tecnica)
     {
         if (!ModelState.IsValid)
-        {
-            return BadRequest("La descripción de la técnica maldita no cumple un formato correcto");
-        }
-        
-        if (!Enum.IsDefined(typeof(TecnicaMaldita.ETipoTecnica), tecnica.Tipo))
-        {
-            return BadRequest("El tipo de técnica especificado no es válido");
-        }
+            return BadRequest("La técnica maldita no cumple el formato");
 
-        tecnica.Id = 0;
-        await _context.TecnicasMalditas.AddAsync(tecnica);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetTecnicaMaldita), new { id = tecnica.Id }, tecnica);
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<ActionResult<TecnicaMaldita>> DeleteTecnicaMaldita(int id)
-    {
-        var tecnica = await _context.TecnicasMalditas.FindAsync(id);
-        if (tecnica == null)
+        try
         {
-            return NotFound("La técnica maldita dada no existe en la base de datos");
+            var created = await _service.CreateAsync(tecnica);
+            return CreatedAtAction(nameof(GetTecnicaMaldita), new { id = created.Id }, created);
         }
-        _context.TecnicasMalditas.Remove(tecnica);
-        await _context.SaveChangesAsync();
-        return Ok();
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<TecnicaMaldita>> PutTecnicaMaldita(int id, TecnicaMaldita tecnica)
+    public async Task<IActionResult> PutTecnicaMaldita(int id, [FromBody] TecnicaMaldita tecnica)
     {
-        var tecnicaExistente = await _context.TecnicasMalditas.FindAsync(id);
-        if (tecnicaExistente == null)
-        {
-            return NotFound("La técnica maldita dada no existe en la base de datos");
-        }
-        
-        if (!Enum.IsDefined(typeof(TecnicaMaldita.ETipoTecnica), tecnica.Tipo))
-        {
-            return BadRequest("El tipo de técnica especificado no es válido");
-        }
+        if (!ModelState.IsValid)
+            return BadRequest("La técnica maldita no cumple el formato");
 
-        tecnicaExistente.Nombre = tecnica.Nombre;
-        tecnicaExistente.Tipo = tecnica.Tipo;
-        tecnicaExistente.EfectividadProm = tecnica.EfectividadProm;
-        tecnicaExistente.CondicionesDeUso = tecnica.CondicionesDeUso;
+        try
+        {
+            var updated = await _service.UpdateAsync(id, tecnica);
+            if (!updated)
+                return NotFound("La técnica maldita que quiere modificar no existe");
 
-        await _context.SaveChangesAsync();
-        return Ok();
+            return NoContent();
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteTecnicaMaldita(int id)
+    {
+        var deleted = await _service.DeleteAsync(id);
+        if (!deleted)
+            return NotFound("La técnica maldita que quiere eliminar no existe");
+
+        return NoContent();
     }
 }

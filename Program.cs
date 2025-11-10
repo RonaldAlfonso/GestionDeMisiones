@@ -28,6 +28,18 @@ builder.Services.AddScoped<IUbicacionRepository, UbicacionRepository>();
 builder.Services.AddScoped<IUbicacionService, UbicacionService>();
 builder.Services.AddScoped<IUsoDeRecursoRepository, UsoDeRecursoRepository>();
 builder.Services.AddScoped<IUsoDeRecursoService, UsoDeRecursoService>();
+builder.Services.AddScoped<IMisionRepository, MisionRepository>();
+builder.Services.AddScoped<IMisionService, MisionService>();
+builder.Services.AddScoped<IPersonalDeApoyoRepository, PersonalDeApoyoRepository>();
+builder.Services.AddScoped<IPersonalDeApoyoService, PersonalDeApoyoService>();
+builder.Services.AddScoped<IRecursoRepository, RecursoRepository>();
+builder.Services.AddScoped<IRecursoService, RecursoService>();
+builder.Services.AddScoped<ISolicitudRepository, SolicitudRepository>();
+builder.Services.AddScoped<ISolicitudService, SolicitudService>();
+builder.Services.AddScoped<ITecnicaMalditaRepository, TecnicaMalditaRepository>();
+builder.Services.AddScoped<ITecnicaMalditaService, TecnicaMalditaService>();
+builder.Services.AddScoped<ITecnicaMalditaDominadaRepository, TecnicaMalditaDominadaRepository>();
+builder.Services.AddScoped<ITecnicaMalditaDominadaService, TecnicaMalditaDominadaService>();
 
 
 var app = builder.Build();

@@ -1,80 +1,78 @@
 using Microsoft.AspNetCore.Mvc;
 using GestionDeMisiones.Models;
-using GestionDeMisiones.Data;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-
-namespace GestionDeMisiones.Controllers;
+using GestionDeMisiones.IService;
 
 [ApiController]
 [Route("api/[controller]")]
 public class PersonalDeApoyoController : ControllerBase
 {
-    private readonly AppDbContext _context;
-    public PersonalDeApoyoController(AppDbContext context)
+    private readonly IPersonalDeApoyoService _service;
+
+    public PersonalDeApoyoController(IPersonalDeApoyoService service)
     {
-        _context = context;
+        _service = service;
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<PersonalDeApoyo>> GetPersonalDeApoyo()
+    public async Task<ActionResult<IEnumerable<PersonalDeApoyo>>> GetPersonalDeApoyo()
     {
-        return Ok(_context.PersonalDeApoyo.ToList());
-    }
-    [HttpGet("{id}")]
-    public ActionResult<PersonalDeApoyo> GetPersonalDeApoyoById(int id)
-    {
-        var personal = _context.PersonalDeApoyo.FirstOrDefault(x => x.Id == id);
-        if (personal == null)
-        {
-            return NotFound("El  personal de apoyo que busca no se encuentra.");
-        }
+        var personal = await _service.GetAllAsync();
         return Ok(personal);
     }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<PersonalDeApoyo>> GetPersonalDeApoyoById(int id)
+    {
+        var personal = await _service.GetByIdAsync(id);
+        if (personal == null)
+            return NotFound("El personal de apoyo que busca no se encuentra");
+        return Ok(personal);
+    }
+
     [HttpPost]
     public async Task<ActionResult<PersonalDeApoyo>> PostPersonalDeApoyo([FromBody] PersonalDeApoyo personal)
     {
         if (!ModelState.IsValid)
-        {
-            return BadRequest("Envie un personal de apoyo valido");
+            return BadRequest("Envíe un personal de apoyo válido");
 
+        try
+        {
+            var created = await _service.CreateAsync(personal);
+            return CreatedAtAction(nameof(GetPersonalDeApoyoById), new { id = created.Id }, created);
         }
-        await _context.PersonalDeApoyo.AddAsync(personal);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetPersonalDeApoyoById), new { id = personal.Id }, personal);
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
+
     [HttpPut("{id}")]
-    public async Task<ActionResult<PersonalDeApoyo>> PutPersonalDeApoyo(int id, [FromBody] PersonalDeApoyo personal)
+    public async Task<IActionResult> PutPersonalDeApoyo(int id, [FromBody] PersonalDeApoyo personal)
     {
-
         if (!ModelState.IsValid)
+            return BadRequest("Envíe un personal de apoyo válido");
+
+        try
         {
-            return BadRequest("envie un personal de apoyo valido");
+            var updated = await _service.UpdateAsync(id, personal);
+            if (!updated)
+                return NotFound("El personal de apoyo que quiere editar no existe");
 
+            return NoContent();
         }
-        var oldpersonal = _context.PersonalDeApoyo.FirstOrDefault(x => x.Id == id);
-        if (oldpersonal == null)
+        catch (ArgumentException ex)
         {
-            return NotFound("El personal de apoyo que quiere editar no existe");
+            return BadRequest(ex.Message);
         }
-        oldpersonal.Name = personal.Name;
-        await _context.SaveChangesAsync();
-        return NoContent();
-
-
     }
+
     [HttpDelete("{id}")]
-    public async Task<ActionResult<PersonalDeApoyo>> DeletePersonalDeApoyo(int id)
+    public async Task<IActionResult> DeletePersonalDeApoyo(int id)
     {
-        var personal = _context.PersonalDeApoyo.FirstOrDefault(x => x.Id == id);
-        if (personal == null)
-        {
-            return NotFound("el personal que quiere eliminar no existe");
-        }
-        _context.PersonalDeApoyo.Remove(personal);
-        await _context.SaveChangesAsync();
+        var deleted = await _service.DeleteAsync(id);
+        if (!deleted)
+            return NotFound("El personal que quiere eliminar no existe");
+
         return NoContent();
     }
-
 }

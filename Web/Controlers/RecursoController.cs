@@ -1,66 +1,78 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using GestionDeMisiones.Models;
-using GestionDeMisiones.Data;
-using System.Collections;
-
-namespace GestionDeMisiones.Controllers;
+using GestionDeMisiones.IService;
 
 [ApiController]
 [Route("api/[controller]")]
 public class RecursoController : ControllerBase
 {
-    private readonly AppDbContext _context;
-    public RecursoController(AppDbContext context)
+    private readonly IRecursoService _service;
+
+    public RecursoController(IRecursoService service)
     {
-        _context = context;
+        _service = service;
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<Recurso>> GetAllRecurso()
+    public async Task<ActionResult<IEnumerable<Recurso>>> GetAllRecurso()
     {
-        return Ok(_context.Recursos.ToList());
+        var recursos = await _service.GetAllAsync();
+        return Ok(recursos);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Recurso> GetRecurso(int id)
+    public async Task<ActionResult<Recurso>> GetRecurso(int id)
     {
-        var recurso = _context.Recursos.Find(id);
-        if (recurso == null) return NotFound("El recurso dado no existe");
+        var recurso = await _service.GetByIdAsync(id);
+        if (recurso == null)
+            return NotFound("El recurso que buscas no existe");
         return Ok(recurso);
     }
 
     [HttpPost]
     public async Task<ActionResult<Recurso>> PostRecurso([FromBody] Recurso recurso)
     {
-        if (!ModelState.IsValid) return BadRequest("El recurso dado no cumple el formato");
-        recurso.Id = 0;
-        await _context.Recursos.AddAsync(recurso);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetRecurso), new { id = recurso.Id }, recurso);
-    }
+        if (!ModelState.IsValid)
+            return BadRequest("El recurso no cumple el formato");
 
-    [HttpDelete("{id}")]
-    public async Task<ActionResult<Recurso>> DeleteRecurso(int id)
-    {
-        var recurso = await _context.Recursos.FindAsync(id);
-        if (recurso == null) return NotFound("El recurso dado no existe");
-        _context.Recursos.Remove(recurso);
-        await _context.SaveChangesAsync();
-        return NoContent();
+        try
+        {
+            var created = await _service.CreateAsync(recurso);
+            return CreatedAtAction(nameof(GetRecurso), new { id = created.Id }, created);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<Recurso>> PutRecurso([FromRoute] int id, [FromBody] Recurso recurso)
+    public async Task<IActionResult> PutRecurso(int id, [FromBody] Recurso recurso)
     {
-        var _recurso = await _context.Recursos.FindAsync(id);
-        if (_recurso == null) return NotFound("El recurso que se quiere modificar no existe");
-        if (!ModelState.IsValid) return BadRequest("El recurso dado no cumple el formato");
+        if (!ModelState.IsValid)
+            return BadRequest("El recurso no cumple el formato");
 
-        _recurso.Descripcion = recurso.Descripcion;
-        _recurso.TipoRecurso = recurso.TipoRecurso;
+        try
+        {
+            var updated = await _service.UpdateAsync(id, recurso);
+            if (!updated)
+                return NotFound("El recurso que quiere modificar no existe");
 
-        await _context.SaveChangesAsync();
-        return Ok();
+            return NoContent();
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteRecurso(int id)
+    {
+        var deleted = await _service.DeleteAsync(id);
+        if (!deleted)
+            return NotFound("El recurso que quiere eliminar no existe");
+
+        return NoContent();
     }
 }
