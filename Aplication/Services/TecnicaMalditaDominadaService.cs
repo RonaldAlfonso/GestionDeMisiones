@@ -28,7 +28,7 @@ public class TecnicaMalditaDominadaService : ITecnicaMalditaDominadaService
 
     public async Task<TecnicaMalditaDominada> CreateAsync(TecnicaMalditaDominada tecnicaDominada)
     {
-        // 🔸 Validaciones de negocio
+        // Validaciones de negocio
         await ValidateRelationsAsync(tecnicaDominada);
 
         if (tecnicaDominada.NivelDeDominio < 0 || tecnicaDominada.NivelDeDominio > 100)
@@ -48,7 +48,7 @@ public class TecnicaMalditaDominadaService : ITecnicaMalditaDominadaService
         if (existing == null)
             return false;
 
-        // 🔸 Validaciones de negocio
+        // Validaciones de negocio
         await ValidateRelationsAsync(tecnicaDominada);
 
         if (tecnicaDominada.NivelDeDominio < 0 || tecnicaDominada.NivelDeDominio > 100)

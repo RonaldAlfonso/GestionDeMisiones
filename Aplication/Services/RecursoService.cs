@@ -40,7 +40,7 @@ public class RecursoService : IRecursoService
         if (existing == null)
             return false;
 
-        // 🔸 Validaciones de negocio
+        // Validaciones de negocio
         if (!Enum.IsDefined(typeof(Recurso.ETipoRecurso), recurso.TipoRecurso))
             throw new ArgumentException("Tipo de recurso no válido");
 
