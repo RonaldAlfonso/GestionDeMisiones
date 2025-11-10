@@ -56,5 +56,21 @@ namespace GestionDeMisiones.Web.Controlers
             if (user == null) return Unauthorized();
             return Ok(new MeResponse { User = user });
         }
+
+        [HttpPost("create")]
+        [Authorize(Roles = "admin,support")] // permitir admin o support (admin token expuesto como 'admin')
+        public async Task<ActionResult<CreateUserResponse>> CreateUser([FromBody] CreateUserRequest request)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            try
+            {
+                var user = await _authService.CreateUserAsync(request.Name, request.Email, request.Password, request.Role, request.Rank);
+                return Ok(new CreateUserResponse { User = user });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }

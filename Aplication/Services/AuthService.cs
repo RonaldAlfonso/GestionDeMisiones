@@ -36,7 +36,8 @@ namespace GestionDeMisiones.Service
             if (!BCrypt.Net.BCrypt.Verify(password, userRec.PasswordHash))
                 throw new ArgumentException("Credenciales inválidas");
 
-            var authUser = new AuthUser { Id = userRec.Id, Name = userRec.Nombre, Email = userRec.Email, Role = userRec.Rol, Rank = userRec.Rango };
+            var normalizedRole = NormalizeRoleForToken(userRec.Rol);
+            var authUser = new AuthUser { Id = userRec.Id, Name = userRec.Nombre, Email = userRec.Email, Role = normalizedRole, Rank = userRec.Rango };
             var token = GenerateJwt(authUser);
             return (token, authUser);
         }
@@ -48,11 +49,32 @@ namespace GestionDeMisiones.Service
                 throw new ArgumentException("El email ya está registrado");
 
             var hash = BCrypt.Net.BCrypt.HashPassword(password);
-            var user = new Usuario { Nombre = name, Email = email, PasswordHash = hash, Rol = "observer" };
+            // Persistimos en español segun requerimiento: observador|support|hechicero
+            var user = new Usuario { Nombre = name, Email = email, PasswordHash = hash, Rol = "observador" };
             user = await _usersRepo.AddAsync(user);
-            var authUser = new AuthUser { Id = user.Id, Name = user.Nombre, Email = user.Email, Role = user.Rol, Rank = user.Rango };
+            var normalizedRole = NormalizeRoleForToken(user.Rol);
+            var authUser = new AuthUser { Id = user.Id, Name = user.Nombre, Email = user.Email, Role = normalizedRole, Rank = user.Rango };
             var token = GenerateJwt(authUser);
             return (token, authUser);
+        }
+
+        public async Task<AuthUser> CreateUserAsync(string name, string email, string password, string role, string? rank)
+        {
+            // Validar email único
+            var existing = await _usersRepo.GetByEmailAsync(email);
+            if (existing != null)
+                throw new ArgumentException("El email ya está registrado");
+
+            // Normalizar rol de entrada (acepta español o inglés)
+            var dbRole = NormalizeRoleForPersistence(role);
+            if (dbRole == null)
+                throw new ArgumentException("Rol no válido. Use observador/observer, hechicero/sorcerer, support, admin");
+
+            var hash = BCrypt.Net.BCrypt.HashPassword(password);
+            var user = new Usuario { Nombre = name, Email = email, PasswordHash = hash, Rol = dbRole, Rango = rank };
+            user = await _usersRepo.AddAsync(user);
+            var normalizedRole = NormalizeRoleForToken(user.Rol);
+            return new AuthUser { Id = user.Id, Name = user.Nombre, Email = user.Email, Role = normalizedRole, Rank = user.Rango };
         }
 
         public AuthUser? GetUserFromClaims(ClaimsPrincipal user)
@@ -91,6 +113,41 @@ namespace GestionDeMisiones.Service
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private static string NormalizeRoleForToken(string dbRole)
+        {
+            if (string.IsNullOrWhiteSpace(dbRole)) return "observer";
+            var r = dbRole.Trim().ToLowerInvariant();
+            return r switch
+            {
+                // DB en español -> token en inglés esperado por FE
+                "observador" => "observer",
+                "hechicero" => "sorcerer",
+                "support" => "support",
+                // Admin: si FE aún no soporta 'admin', podría mapearse a support; aquí lo exponemos como 'admin'
+                "admin" => "admin",
+                // Ya en inglés o desconocido
+                "observer" => "observer",
+                "sorcerer" => "sorcerer",
+                _ => "observer"
+            };
+        }
+
+        private static string? NormalizeRoleForPersistence(string inputRole)
+        {
+            if (string.IsNullOrWhiteSpace(inputRole)) return null;
+            var r = inputRole.Trim().ToLowerInvariant();
+            return r switch
+            {
+                "observador" => "observador",
+                "observer" => "observador", // persistimos en español
+                "hechicero" => "hechicero",
+                "sorcerer" => "hechicero",
+                "support" => "support", // ya está aceptado así
+                "admin" => "admin",
+                _ => null
+            };
         }
     }
 }

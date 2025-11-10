@@ -16,6 +16,7 @@ namespace GestionDeMisiones.IService
     {
         Task<(string accessToken, AuthUser user)> LoginAsync(string email, string password);
         Task<(string accessToken, AuthUser user)> RegisterAsync(string name, string email, string password);
+        Task<AuthUser> CreateUserAsync(string name, string email, string password, string role, string? rank);
         AuthUser? GetUserFromClaims(ClaimsPrincipal user);
     }
 }
