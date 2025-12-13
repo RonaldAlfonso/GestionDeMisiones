@@ -1,0 +1,334 @@
+.
+├── Aplication
+│   ├── IServices
+│   │   ├── IEstadisticaHechiceroService.cs
+│   │   ├── IHechiceroEnMisionService.cs
+│   │   ├── IHechiceroEncargadoService.cs
+│   │   ├── IHechiceroService.cs
+│   │   ├── IMaldicionService.cs
+│   │   ├── IMisionService.cs
+│   │   ├── IMisionesEnEstadoService.cs
+│   │   ├── IMisionesEnRangoService.cs
+│   │   ├── IPersonalDeApoyoService.cs
+│   │   ├── IRecursoService.cs
+│   │   ├── ISolicitudService.cs
+│   │   ├── ITecnicaMalditaDominadaService.cs
+│   │   ├── ITecnicaMalditaService.cs
+│   │   ├── ITrasladoService.cs
+│   │   ├── IUbicacionService.cs
+│   │   └── IUsoDeRecursosService.cs
+│   └── Services
+│       ├── EstadisticaHechiceroService.cs
+│       ├── HechiceroEnMisionService.cs
+│       ├── HechiceroEncargadoService.cs
+│       ├── HechiceroService.cs
+│       ├── MaldicionService.cs
+│       ├── MaldicionesEnEstadoService.cs
+│       ├── MisionService.cs
+│       ├── MisionesEnRangoService.cs
+│       ├── PersonalDeApoyoService.cs
+│       ├── RecursoService.cs
+│       ├── SolicitudService.cs
+│       ├── TecnicaMalditaDominadaService.cs
+│       ├── TecnicaMalditaService.cs
+│       ├── TrasladoServices.cs
+│       ├── UbicacionService.cs
+│       └── UsoDeRecursosService.cs
+├── Core
+│   └── Modelos
+│       ├── EstadisticaHechicero.cs
+│       ├── Hechicero.cs
+│       ├── HechiceroEnMision.cs
+│       ├── HechiceroEncargado.cs
+│       ├── Maldicion.cs
+│       ├── MaldicionEnEstado.cs
+│       ├── Mision.cs
+│       ├── MisionEnRango.cs
+│       ├── PersonalDeApoyo.cs
+│       ├── Recurso.cs
+│       ├── Solicitud.cs
+│       ├── TecnicaMaldita.cs
+│       ├── TecnicaMalditaAplicada.cs
+│       ├── TecnicaMalditaDominada.cs
+│       ├── Traslado.cs
+│       ├── Ubicacion.cs
+│       └── UsoDeRecurso.cs
+├── Data
+│   └── AppDbContext.cs
+├── GestionDeMisiones.csproj
+├── GestionDeMisiones.http
+├── GestionDeMisiones.sln
+├── Migrations
+│   ├── 20251213214928_InitFix.Designer.cs
+│   ├── 20251213214928_InitFix.cs
+│   └── AppDbContextModelSnapshot.cs
+├── Program.cs
+├── Properties
+│   └── launchSettings.json
+├── Web
+│   └── Controlers
+│       ├── EstadisticaHechiceroController.cs
+│       ├── HechiceroControler.cs
+│       ├── HechiceroEnMisionController.cs
+│       ├── HechiceroEncargadoController.cs
+│       ├── MaldicionController.cs
+│       ├── MaldicionesEnEstadoController.cs
+│       ├── MisionController.cs
+│       ├── MisionesEnRangoController.cs
+│       ├── PersonalDeApoyoControllers.cs
+│       ├── RecursoController.cs
+│       ├── SolicitudController.cs
+│       ├── TecnicaMalditaController.cs
+│       ├── TecnicaMalditaDominadaController.cs
+│       ├── TrasladoController.cs
+│       ├── UbicacionControler.cs
+│       └── UsoDeRecursoController.cs
+├── appsettings.Devolopment.json
+├── appsettings.json
+├── bin
+│   └── Debug
+│       └── net9.0
+│           ├── Azure.Core.dll
+│           ├── Azure.Identity.dll
+│           ├── GestionDeMisiones
+│           ├── GestionDeMisiones.deps.json
+│           ├── GestionDeMisiones.dll
+│           ├── GestionDeMisiones.pdb
+│           ├── GestionDeMisiones.runtimeconfig.json
+│           ├── GestionDeMisiones.staticwebassets.endpoints.json
+│           ├── Humanizer.dll
+│           ├── Microsoft.AspNetCore.OpenApi.dll
+│           ├── Microsoft.Bcl.AsyncInterfaces.dll
+│           ├── Microsoft.Build.Locator.dll
+│           ├── Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+│           ├── Microsoft.CodeAnalysis.CSharp.dll
+│           ├── Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.dll
+│           ├── Microsoft.CodeAnalysis.Workspaces.MSBuild.dll
+│           ├── Microsoft.CodeAnalysis.Workspaces.dll
+│           ├── Microsoft.CodeAnalysis.dll
+│           ├── Microsoft.Data.SqlClient.dll
+│           ├── Microsoft.EntityFrameworkCore.Abstractions.dll
+│           ├── Microsoft.EntityFrameworkCore.Design.dll
+│           ├── Microsoft.EntityFrameworkCore.Relational.dll
+│           ├── Microsoft.EntityFrameworkCore.SqlServer.dll
+│           ├── Microsoft.EntityFrameworkCore.dll
+│           ├── Microsoft.Extensions.Caching.Abstractions.dll
+│           ├── Microsoft.Extensions.Caching.Memory.dll
+│           ├── Microsoft.Extensions.Configuration.Abstractions.dll
+│           ├── Microsoft.Extensions.DependencyInjection.Abstractions.dll
+│           ├── Microsoft.Extensions.DependencyInjection.dll
+│           ├── Microsoft.Extensions.DependencyModel.dll
+│           ├── Microsoft.Extensions.Logging.Abstractions.dll
+│           ├── Microsoft.Extensions.Logging.dll
+│           ├── Microsoft.Extensions.Options.dll
+│           ├── Microsoft.Extensions.Primitives.dll
+│           ├── Microsoft.Identity.Client.Extensions.Msal.dll
+│           ├── Microsoft.Identity.Client.dll
+│           ├── Microsoft.IdentityModel.Abstractions.dll
+│           ├── Microsoft.IdentityModel.JsonWebTokens.dll
+│           ├── Microsoft.IdentityModel.Logging.dll
+│           ├── Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+│           ├── Microsoft.IdentityModel.Protocols.dll
+│           ├── Microsoft.IdentityModel.Tokens.dll
+│           ├── Microsoft.OpenApi.dll
+│           ├── Microsoft.SqlServer.Server.dll
+│           ├── Microsoft.Win32.SystemEvents.dll
+│           ├── Mono.TextTemplating.dll
+│           ├── Swashbuckle.AspNetCore.Swagger.dll
+│           ├── Swashbuckle.AspNetCore.SwaggerGen.dll
+│           ├── Swashbuckle.AspNetCore.SwaggerUI.dll
+│           ├── System.ClientModel.dll
+│           ├── System.CodeDom.dll
+│           ├── System.Composition.AttributedModel.dll
+│           ├── System.Composition.Convention.dll
+│           ├── System.Composition.Hosting.dll
+│           ├── System.Composition.Runtime.dll
+│           ├── System.Composition.TypedParts.dll
+│           ├── System.Configuration.ConfigurationManager.dll
+│           ├── System.Drawing.Common.dll
+│           ├── System.IdentityModel.Tokens.Jwt.dll
+│           ├── System.Memory.Data.dll
+│           ├── System.Runtime.Caching.dll
+│           ├── System.Security.Cryptography.ProtectedData.dll
+│           ├── System.Security.Permissions.dll
+│           ├── System.Windows.Extensions.dll
+│           ├── appsettings.Devolopment.json
+│           ├── appsettings.json
+│           ├── cs
+│           │   ├── Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.CSharp.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.resources.dll
+│           │   └── Microsoft.CodeAnalysis.resources.dll
+│           ├── de
+│           │   ├── Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.CSharp.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.resources.dll
+│           │   └── Microsoft.CodeAnalysis.resources.dll
+│           ├── es
+│           │   ├── Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.CSharp.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.resources.dll
+│           │   └── Microsoft.CodeAnalysis.resources.dll
+│           ├── fr
+│           │   ├── Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.CSharp.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.resources.dll
+│           │   └── Microsoft.CodeAnalysis.resources.dll
+│           ├── it
+│           │   ├── Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.CSharp.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.resources.dll
+│           │   └── Microsoft.CodeAnalysis.resources.dll
+│           ├── ja
+│           │   ├── Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.CSharp.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.resources.dll
+│           │   └── Microsoft.CodeAnalysis.resources.dll
+│           ├── ko
+│           │   ├── Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.CSharp.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.resources.dll
+│           │   └── Microsoft.CodeAnalysis.resources.dll
+│           ├── pl
+│           │   ├── Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.CSharp.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.resources.dll
+│           │   └── Microsoft.CodeAnalysis.resources.dll
+│           ├── pt-BR
+│           │   ├── Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.CSharp.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.resources.dll
+│           │   └── Microsoft.CodeAnalysis.resources.dll
+│           ├── ru
+│           │   ├── Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.CSharp.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.resources.dll
+│           │   └── Microsoft.CodeAnalysis.resources.dll
+│           ├── runtimes
+│           │   ├── unix
+│           │   │   └── lib
+│           │   │       └── net6.0
+│           │   │           ├── Microsoft.Data.SqlClient.dll
+│           │   │           └── System.Drawing.Common.dll
+│           │   ├── win
+│           │   │   └── lib
+│           │   │       └── net6.0
+│           │   │           ├── Microsoft.Data.SqlClient.dll
+│           │   │           ├── Microsoft.Win32.SystemEvents.dll
+│           │   │           ├── System.Drawing.Common.dll
+│           │   │           ├── System.Runtime.Caching.dll
+│           │   │           ├── System.Security.Cryptography.ProtectedData.dll
+│           │   │           └── System.Windows.Extensions.dll
+│           │   ├── win-arm
+│           │   │   └── native
+│           │   │       └── Microsoft.Data.SqlClient.SNI.dll
+│           │   ├── win-arm64
+│           │   │   └── native
+│           │   │       └── Microsoft.Data.SqlClient.SNI.dll
+│           │   ├── win-x64
+│           │   │   └── native
+│           │   │       └── Microsoft.Data.SqlClient.SNI.dll
+│           │   └── win-x86
+│           │       └── native
+│           │           └── Microsoft.Data.SqlClient.SNI.dll
+│           ├── tr
+│           │   ├── Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.CSharp.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.resources.dll
+│           │   └── Microsoft.CodeAnalysis.resources.dll
+│           ├── zh-Hans
+│           │   ├── Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.CSharp.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+│           │   ├── Microsoft.CodeAnalysis.Workspaces.resources.dll
+│           │   └── Microsoft.CodeAnalysis.resources.dll
+│           └── zh-Hant
+│               ├── Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+│               ├── Microsoft.CodeAnalysis.CSharp.resources.dll
+│               ├── Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+│               ├── Microsoft.CodeAnalysis.Workspaces.resources.dll
+│               └── Microsoft.CodeAnalysis.resources.dll
+├── estructura.txt
+├── infraestructure
+│   ├── IRepository
+│   │   ├── IEstadisticasHechiceroRepository.cs
+│   │   ├── IHechiceroEnMisionRepository.cs
+│   │   ├── IHechiceroEncargadoRepository.cs
+│   │   ├── IHechiceroRepository.cs
+│   │   ├── IMaldicionRepository.cs
+│   │   ├── IMaldicionesEnEstado.cs
+│   │   ├── IMisionRepository.cs
+│   │   ├── IMisionesEnRangoRepository.cs
+│   │   ├── IPersonalDeApoyoRepository.cs
+│   │   ├── IRecursoRepository.cs
+│   │   ├── ISolicitudRepository.cs
+│   │   ├── ITecnicaMalditaDominadaRepository.cs
+│   │   ├── ITecnicaMalditaRepository.cs
+│   │   ├── ITrasladoRepository.cs
+│   │   ├── IUbicacionRepository.cs
+│   │   └── IUsoDeRecursoRepository.cs
+│   └── Repositorie
+│       ├── EstadisticasHechiceroRepository.cs
+│       ├── HechiceroEnMisionRepository.cs
+│       ├── HechiceroEncargadoRepository.cs
+│       ├── HechiceroRepository.cs
+│       ├── MaldicionRepository.cs
+│       ├── MaldicionesEnEstado.cs
+│       ├── MisionRepository.cs
+│       ├── MisionesEnRangoRepository.cs
+│       ├── PersonalDeApoyoRepository.cs
+│       ├── RecursoRepository.cs
+│       ├── SolicitudRepository.cs
+│       ├── TecnicaMalditaDominadaRepository.cs
+│       ├── TecnicaMalditaRepository.cs
+│       ├── TrasladoRepository.cs
+│       ├── UbicacionRepository.cs
+│       └── UsoDeRecursoRepository.cs
+└── obj
+    ├── Debug
+    │   └── net9.0
+    │       ├── GestionD.5C096C7B.Up2Date
+    │       ├── GestionDeMisiones.AssemblyInfo.cs
+    │       ├── GestionDeMisiones.AssemblyInfoInputs.cache
+    │       ├── GestionDeMisiones.GeneratedMSBuildEditorConfig.editorconfig
+    │       ├── GestionDeMisiones.GlobalUsings.g.cs
+    │       ├── GestionDeMisiones.MvcApplicationPartsAssemblyInfo.cache
+    │       ├── GestionDeMisiones.MvcApplicationPartsAssemblyInfo.cs
+    │       ├── GestionDeMisiones.assets.cache
+    │       ├── GestionDeMisiones.csproj.AssemblyReference.cache
+    │       ├── GestionDeMisiones.csproj.CoreCompileInputs.cache
+    │       ├── GestionDeMisiones.csproj.FileListAbsolute.txt
+    │       ├── GestionDeMisiones.dll
+    │       ├── GestionDeMisiones.genruntimeconfig.cache
+    │       ├── GestionDeMisiones.pdb
+    │       ├── GestionDeMisiones.sourcelink.json
+    │       ├── apphost
+    │       ├── ref
+    │       │   └── GestionDeMisiones.dll
+    │       ├── refint
+    │       │   └── GestionDeMisiones.dll
+    │       ├── staticwebassets
+    │       │   ├── msbuild.build.GestionDeMisiones.props
+    │       │   ├── msbuild.buildMultiTargeting.GestionDeMisiones.props
+    │       │   └── msbuild.buildTransitive.GestionDeMisiones.props
+    │       ├── staticwebassets.build.endpoints.json
+    │       └── staticwebassets.build.json
+    ├── GestionDeMisiones.csproj.EntityFrameworkCore.targets
+    ├── GestionDeMisiones.csproj.nuget.dgspec.json
+    ├── GestionDeMisiones.csproj.nuget.g.props
+    ├── GestionDeMisiones.csproj.nuget.g.targets
+    ├── project.assets.json
+    └── project.nuget.cache
+
+51 directories, 281 files

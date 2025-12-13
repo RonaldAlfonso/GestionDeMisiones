@@ -79,7 +79,8 @@ namespace GestionDeMisiones.Data
             modelBuilder.Entity<TecnicaMalditaDominada>()
                 .HasOne(tmd => tmd.TecnicaMaldita)
                 .WithMany(tm => tm.TecnicasMalditasDominadas)
-                .HasForeignKey(tmd => tmd.TecnicaMalditaId);
+                .HasForeignKey(tmd => tmd.TecnicaMalditaId)
+                .OnDelete(DeleteBehavior.NoAction);
 
         }
     }
