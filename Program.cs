@@ -46,7 +46,8 @@ builder.Services.AddScoped<IMisionesEnRangoRepository, MisionesEnRangoRepository
 builder.Services.AddScoped<IMisionesEnRangoService, MisionesEnRangoService>();
 builder.Services.AddScoped<IEstadisticasHechiceroRepository, EstadisticasHechiceroRepository>();
 builder.Services.AddScoped<IEstadisticasHechiceroService, EstadisticasHechiceroService>();
-
+builder.Services.AddScoped<IHechiceroEnMisionRepository, HechiceroEnMisionRepository>();
+builder.Services.AddScoped< IHechiceroEnMisionService, HechiceroEnMisionService>();
 
 
 var app = builder.Build();
