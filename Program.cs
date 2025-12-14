@@ -50,6 +50,12 @@ builder.Services.AddScoped<IHechiceroEnMisionRepository, HechiceroEnMisionReposi
 builder.Services.AddScoped<IHechiceroEnMisionService, HechiceroEnMisionService>();
 builder.Services.AddScoped<ISubordinacionRepository, SubordinacionRepository>();
 builder.Services.AddScoped< ISubordinacionService, SubordinacionService>();
+builder.Services.AddScoped<IQuery2Repository, Query2Repository>();
+builder.Services.AddScoped<IQuery4Repository, Query4Repository>();
+builder.Services.AddScoped<IQuery6Repository, Query6Repository>();
+builder.Services.AddScoped<IQuery2Service, Query2Service>();
+builder.Services.AddScoped<IQuery4Service, Query4Service>();
+builder.Services.AddScoped<IQuery6Service, Query6Service>();
 
 
 var app = builder.Build();
