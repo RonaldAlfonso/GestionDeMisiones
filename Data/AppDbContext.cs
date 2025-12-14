@@ -98,6 +98,11 @@ namespace GestionDeMisiones.Data
                 .HasIndex(s => new { s.MaestroId, s.DiscipuloId, s.Activa })
                 .IsUnique()
                 .HasFilter("[Activa] = 1");
+        
+            modelBuilder.Entity<Traslado>()
+                .HasMany(tr => tr.Supervisores)
+                .WithMany(p => p.TrasladosSupervisados)
+                .UsingEntity(t => t.ToTable("TrasladoSupervisado"));
         }
     }
 }

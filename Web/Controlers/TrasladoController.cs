@@ -57,4 +57,50 @@ public class TrasladoController : ControllerBase
         if (!deleted) return NotFound("El Traslado que intento eliminar no existe");
         return NoContent();
     }
+
+    [HttpGet("{id}/hechiceros")]
+    public async Task<ActionResult<IEnumerable<Hechicero>>> GetHechicerosEnTraslado(int id)
+    {
+        var hechiceros = await _service.GetHechicerosEnTrasladoAsync(id);
+        return Ok(hechiceros);
+    }
+
+    [HttpGet("{id}/personal-apoyo")]
+    public async Task<ActionResult<IEnumerable<PersonalDeApoyo>>> GetPersonalApoyoEnTraslado(int id)
+    {
+        var personal = await _service.GetPersonalApoyoEnTrasladoAsync(id);
+        return Ok(personal);
+    }
+
+    [HttpPost("{id}/hechiceros/{hechiceroId}")]
+    public async Task<IActionResult> AgregarHechiceroATraslado(int id, int hechiceroId)
+    {
+        var resultado = await _service.AgregarHechiceroAsync(id, hechiceroId);
+        if (!resultado) return NotFound("No se pudo agregar el hechicero al traslado");
+        return NoContent();
+    }
+
+    [HttpDelete("{id}/hechiceros/{hechiceroId}")]
+    public async Task<IActionResult> QuitarHechiceroDeTraslado(int id, int hechiceroId)
+    {
+        var resultado = await _service.QuitarHechiceroAsync(id, hechiceroId);
+        if (!resultado) return NotFound("No se pudo quitar el hechicero del traslado");
+        return NoContent();
+    }
+
+    [HttpPost("{id}/personal-apoyo/{personalId}")]
+    public async Task<IActionResult> AgregarPersonalApoyoATraslado(int id, int personalId)
+    {
+        var resultado = await _service.AgregarPersonalApoyoAsync(id, personalId);
+        if (!resultado) return NotFound("No se pudo agregar el personal de apoyo al traslado");
+        return NoContent();
+    }
+
+    [HttpDelete("{id}/personal-apoyo/{personalId}")]
+    public async Task<IActionResult> QuitarPersonalApoyoDeTraslado(int id, int personalId)
+    {
+        var resultado = await _service.QuitarPersonalApoyoAsync(id, personalId);
+        if (!resultado) return NotFound("No se pudo quitar el personal de apoyo del traslado");
+        return NoContent();
+    }
 }

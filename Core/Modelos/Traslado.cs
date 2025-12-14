@@ -30,6 +30,9 @@ public class Traslado
     [JsonIgnore]
     public ICollection<Hechicero> Hechiceros { get; set; } = [];
 
+    [JsonIgnore]
+    public ICollection<PersonalDeApoyo> Supervisores { get; set; } = [];
+
 
 
 
