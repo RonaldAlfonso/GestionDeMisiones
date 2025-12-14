@@ -56,6 +56,8 @@ builder.Services.AddScoped<IQuery6Repository, Query6Repository>();
 builder.Services.AddScoped<IQuery2Service, Query2Service>();
 builder.Services.AddScoped<IQuery4Service, Query4Service>();
 builder.Services.AddScoped<IQuery6Service, Query6Service>();
+builder.Services.AddScoped<IRankingHechiceroRepository, RankingHechiceroRepository>();
+builder.Services.AddScoped<IRankingHechiceroService, RankingHechiceroService>();
 
 
 var app = builder.Build();
