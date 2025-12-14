@@ -24,7 +24,7 @@ namespace GestionDeMisiones.Data
         public DbSet<HechiceroEncargado>HechiceroEncargado{ get; set; }
         public DbSet<HechiceroEnMision> HechiceroEnMision { get; set; }
         public DbSet<TecnicaMalditaAplicada>TecnicaMalditaAplicada{ get; set; }
-
+        public DbSet<Subordinacion> Subordinaciones { get; set; }
         public DbSet<TecnicaMalditaDominada> TecnicasMalditasDominadas { get; set; }
 
 
@@ -79,8 +79,30 @@ namespace GestionDeMisiones.Data
             modelBuilder.Entity<TecnicaMalditaDominada>()
                 .HasOne(tmd => tmd.TecnicaMaldita)
                 .WithMany(tm => tm.TecnicasMalditasDominadas)
-                .HasForeignKey(tmd => tmd.TecnicaMalditaId);
+                .HasForeignKey(tmd => tmd.TecnicaMalditaId)
+                .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<Subordinacion>()
+                .HasOne(s => s.Maestro)
+                .WithMany()
+                .HasForeignKey(s => s.MaestroId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Subordinacion>()
+                .HasOne(s => s.Discipulo)
+                .WithMany()
+                .HasForeignKey(s => s.DiscipuloId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Subordinacion>()
+                .HasIndex(s => new { s.MaestroId, s.DiscipuloId, s.Activa })
+                .IsUnique()
+                .HasFilter("[Activa] = 1");
+        
+            modelBuilder.Entity<Traslado>()
+                .HasMany(tr => tr.Supervisores)
+                .WithMany(p => p.TrasladosSupervisados)
+                .UsingEntity(t => t.ToTable("TrasladoSupervisado"));
         }
     }
 }

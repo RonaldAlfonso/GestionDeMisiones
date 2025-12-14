@@ -76,6 +76,34 @@ namespace GestionDeMisiones.Migrations
                     b.ToTable("HechiceroEnMision");
                 });
 
+            modelBuilder.Entity("GestionDeMisiones.Models.HechiceroEncargado", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("HechiceroId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MisionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SolicitudId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HechiceroId");
+
+                    b.HasIndex("MisionId");
+
+                    b.HasIndex("SolicitudId");
+
+                    b.ToTable("HechiceroEncargado");
+                });
+
             modelBuilder.Entity("GestionDeMisiones.Models.Maldicion", b =>
                 {
                     b.Property<int>("Id")
@@ -206,6 +234,43 @@ namespace GestionDeMisiones.Migrations
                     b.HasIndex("MaldicionId");
 
                     b.ToTable("Solicitud");
+                });
+
+            modelBuilder.Entity("GestionDeMisiones.Models.Subordinacion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Activa")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("DiscipuloId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("FechaFin")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaInicio")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MaestroId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TipoRelacion")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DiscipuloId");
+
+                    b.HasIndex("MaestroId", "DiscipuloId", "Activa")
+                        .IsUnique()
+                        .HasFilter("[Activa] = 1");
+
+                    b.ToTable("Subordinaciones");
                 });
 
             modelBuilder.Entity("GestionDeMisiones.Models.TecnicaMaldita", b =>
@@ -363,6 +428,47 @@ namespace GestionDeMisiones.Migrations
                     b.ToTable("TrasladoDeHechicero", (string)null);
                 });
 
+            modelBuilder.Entity("PersonalDeApoyoTraslado", b =>
+                {
+                    b.Property<int>("SupervisoresId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TrasladosSupervisadosId")
+                        .HasColumnType("int");
+
+                    b.HasKey("SupervisoresId", "TrasladosSupervisadosId");
+
+                    b.HasIndex("TrasladosSupervisadosId");
+
+                    b.ToTable("TrasladoSupervisado", (string)null);
+                });
+
+            modelBuilder.Entity("TecnicaMalditaDominada", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("HechiceroId")
+                        .HasColumnType("int");
+
+                    b.Property<float>("NivelDeDominio")
+                        .HasColumnType("real");
+
+                    b.Property<int>("TecnicaMalditaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HechiceroId");
+
+                    b.HasIndex("TecnicaMalditaId");
+
+                    b.ToTable("TecnicasMalditasDominadas");
+                });
+
             modelBuilder.Entity("GestionDeMisiones.Models.Hechicero", b =>
                 {
                     b.HasOne("GestionDeMisiones.Models.TecnicaMaldita", "TecnicaPrincipal")
@@ -391,6 +497,33 @@ namespace GestionDeMisiones.Migrations
                     b.Navigation("Hechicero");
 
                     b.Navigation("Mision");
+                });
+
+            modelBuilder.Entity("GestionDeMisiones.Models.HechiceroEncargado", b =>
+                {
+                    b.HasOne("GestionDeMisiones.Models.Hechicero", "Hechicero")
+                        .WithMany()
+                        .HasForeignKey("HechiceroId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GestionDeMisiones.Models.Mision", "Mision")
+                        .WithMany()
+                        .HasForeignKey("MisionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GestionDeMisiones.Models.Solicitud", "Solicitud")
+                        .WithMany()
+                        .HasForeignKey("SolicitudId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Hechicero");
+
+                    b.Navigation("Mision");
+
+                    b.Navigation("Solicitud");
                 });
 
             modelBuilder.Entity("GestionDeMisiones.Models.Maldicion", b =>
@@ -424,6 +557,25 @@ namespace GestionDeMisiones.Migrations
                         .IsRequired();
 
                     b.Navigation("Maldicion");
+                });
+
+            modelBuilder.Entity("GestionDeMisiones.Models.Subordinacion", b =>
+                {
+                    b.HasOne("GestionDeMisiones.Models.Hechicero", "Discipulo")
+                        .WithMany()
+                        .HasForeignKey("DiscipuloId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GestionDeMisiones.Models.Hechicero", "Maestro")
+                        .WithMany()
+                        .HasForeignKey("MaestroId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Discipulo");
+
+                    b.Navigation("Maestro");
                 });
 
             modelBuilder.Entity("GestionDeMisiones.Models.TecnicaMalditaAplicada", b =>
@@ -504,11 +656,47 @@ namespace GestionDeMisiones.Migrations
                         .HasForeignKey("TrasladosId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                }    
-            );            
+                });
+
+            modelBuilder.Entity("PersonalDeApoyoTraslado", b =>
+                {
+                    b.HasOne("GestionDeMisiones.Models.PersonalDeApoyo", null)
+                        .WithMany()
+                        .HasForeignKey("SupervisoresId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GestionDeMisiones.Models.Traslado", null)
+                        .WithMany()
+                        .HasForeignKey("TrasladosSupervisadosId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("TecnicaMalditaDominada", b =>
+                {
+                    b.HasOne("GestionDeMisiones.Models.Hechicero", "Hechicero")
+                        .WithMany("TecnicasMalditasDominadas")
+                        .HasForeignKey("HechiceroId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GestionDeMisiones.Models.TecnicaMaldita", "TecnicaMaldita")
+                        .WithMany("TecnicasMalditasDominadas")
+                        .HasForeignKey("TecnicaMalditaId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Hechicero");
+
+                    b.Navigation("TecnicaMaldita");
+                });
+
             modelBuilder.Entity("GestionDeMisiones.Models.Hechicero", b =>
                 {
                     b.Navigation("Misiones");
+
+                    b.Navigation("TecnicasMalditasDominadas");
                 });
 
             modelBuilder.Entity("GestionDeMisiones.Models.Mision", b =>
@@ -530,6 +718,7 @@ namespace GestionDeMisiones.Migrations
             modelBuilder.Entity("GestionDeMisiones.Models.TecnicaMaldita", b =>
                 {
                     b.Navigation("Misiones");
+
                     b.Navigation("TecnicasMalditasDominadas");
                 });
 

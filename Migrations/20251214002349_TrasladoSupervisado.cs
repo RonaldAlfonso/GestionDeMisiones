@@ -5,46 +5,46 @@
 namespace GestionDeMisiones.Migrations
 {
     /// <inheritdoc />
-    public partial class RelacionTrasladoMoverHechicero : Migration
+    public partial class TrasladoSupervisado : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "TrasladoDeHechicero",
+                name: "TrasladoSupervisado",
                 columns: table => new
                 {
-                    HechicerosId = table.Column<int>(type: "int", nullable: false),
-                    TrasladosId = table.Column<int>(type: "int", nullable: false)
+                    SupervisoresId = table.Column<int>(type: "int", nullable: false),
+                    TrasladosSupervisadosId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TrasladoDeHechicero", x => new { x.HechicerosId, x.TrasladosId });
+                    table.PrimaryKey("PK_TrasladoSupervisado", x => new { x.SupervisoresId, x.TrasladosSupervisadosId });
                     table.ForeignKey(
-                        name: "FK_TrasladoDeHechicero_Hechiceros_HechicerosId",
-                        column: x => x.HechicerosId,
-                        principalTable: "Hechiceros",
+                        name: "FK_TrasladoSupervisado_PersonalDeApoyo_SupervisoresId",
+                        column: x => x.SupervisoresId,
+                        principalTable: "PersonalDeApoyo",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TrasladoDeHechicero_Traslados_TrasladosId",
-                        column: x => x.TrasladosId,
+                        name: "FK_TrasladoSupervisado_Traslados_TrasladosSupervisadosId",
+                        column: x => x.TrasladosSupervisadosId,
                         principalTable: "Traslados",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_TrasladoDeHechicero_TrasladosId",
-                table: "TrasladoDeHechicero",
-                column: "TrasladosId");
+                name: "IX_TrasladoSupervisado_TrasladosSupervisadosId",
+                table: "TrasladoSupervisado",
+                column: "TrasladosSupervisadosId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "TrasladoDeHechicero");
+                name: "TrasladoSupervisado");
         }
     }
 }
