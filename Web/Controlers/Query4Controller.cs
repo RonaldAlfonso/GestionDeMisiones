@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using GestionDeMisiones.IService;
 using GestionDeMisiones.Models;
+using GestionDeMisiones.Web;
+using QuestPDF.Fluent;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -19,4 +21,21 @@ public class Query4Controller : ControllerBase
         var result = await _service.GetEfectividadTecnicasAsync();
         return Ok(result);
     }
+    [HttpGet("efectividad-tecnicas/pdf")]
+    public async Task<IActionResult> GetEfectividadTecnicasPdf()
+    {
+        var data = await _service.GetEfectividadTecnicasAsync();
+
+        if (!data.Any())
+            return NotFound("No hay datos para generar el reporte.");
+
+        var document = new EfectividadTecnicasDocument(data);
+
+        var stream = new MemoryStream();
+        document.GeneratePdf(stream);
+        stream.Position = 0;
+
+        return File(stream, "application/pdf", "efectividad-tecnicas.pdf");
+    }
+
 }

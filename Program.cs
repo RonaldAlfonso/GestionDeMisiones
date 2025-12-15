@@ -5,6 +5,12 @@ using GestionDeMisiones.IRepository;
 using GestionDeMisiones.IService;
 using GestionDeMisiones.Repository;
 using GestionDeMisiones.Service;
+using QuestPDF.Fluent;
+using QuestPDF.Infrastructure;
+
+QuestPDF.Settings.License = LicenseType.Community;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
