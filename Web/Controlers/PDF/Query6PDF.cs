@@ -42,58 +42,69 @@ namespace GestionDeMisiones.Web
 
         void ComposeTables(IContainer container)
         {
-            foreach (var hechicero in _data)
+            // 1. Creamos una Columna principal para contener toda la lista
+            container.Column(column =>
             {
-                container.Element(c =>
+                column.Spacing(20); // Espacio entre cada bloque de hechicero
+
+                foreach (var hechicero in _data)
                 {
-                    c.Column(column =>
+                    // 2. Agregamos un Item a la columna por cada hechicero
+                    column.Item().Element(c =>
                     {
-                        column.Item().Text($"{hechicero.NombreHechicero} ({hechicero.Grado})")
-                            .Bold()
-                            .FontSize(12);
+                        // Aquí va tu lógica de diseño original para cada hechicero
+                        // Nota: Ya no necesitamos crear otra 'Column' interna si no queremos, 
+                        // pero para mantener tu estructura visual exacta, lo dejaremos similar.
 
-                        column.Item().Text(
-                            $"Misiones Totales: {hechicero.MisionesTotales}, " +
-                            $"Éxitos: {hechicero.MisionesExitosas}, " +
-                            $"Fallos: {hechicero.MisionesFallidas}, " +
-                            $"% Éxito: {hechicero.PorcentajeExito:F2}%"
-                        );
-
-                        if (hechicero.Discipulos.Any())
+                        c.Column(innerColumn =>
                         {
-                            column.Item().Table(table =>
+                            innerColumn.Item().Text($"{hechicero.NombreHechicero} ({hechicero.Grado})")
+                                .Bold()
+                                .FontSize(12);
+
+                            innerColumn.Item().Text(
+                                $"Misiones Totales: {hechicero.MisionesTotales}, " +
+                                $"Éxitos: {hechicero.MisionesExitosas}, " +
+                                $"Fallos: {hechicero.MisionesFallidas}, " +
+                                $"% Éxito: {hechicero.PorcentajeExito:F2}%"
+                            );
+
+                            if (hechicero.Discipulos.Any())
                             {
-                                table.ColumnsDefinition(cols =>
+                                innerColumn.Item().PaddingTop(5).Table(table =>
                                 {
-                                    cols.RelativeColumn(); // Nombre
-                                    cols.RelativeColumn(); // Grado
-                                    cols.RelativeColumn(); // Tipo de relación
+                                    table.ColumnsDefinition(cols =>
+                                    {
+                                        cols.RelativeColumn(); // Nombre
+                                        cols.RelativeColumn(); // Grado
+                                        cols.RelativeColumn(); // Tipo de relación
+                                    });
+
+                                    table.Header(header =>
+                                    {
+                                        header.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten2).Padding(2).Text("Discípulo").Bold();
+                                        header.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten2).Padding(2).Text("Grado").Bold();
+                                        header.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten2).Padding(2).Text("Tipo Relación").Bold();
+                                    });
+
+                                    foreach (var d in hechicero.Discipulos)
+                                    {
+                                        table.Cell().Padding(2).Text(d.NombreDiscipulo);
+                                        table.Cell().Padding(2).Text(d.GradoDiscipulo);
+                                        table.Cell().Padding(2).Text(d.TipoRelacion);
+                                    }
                                 });
+                            }
+                            else
+                            {
+                                innerColumn.Item().PaddingTop(5).Text("No tiene discípulos asignados").Italic().FontColor(Colors.Grey.Medium);
+                            }
 
-                                table.Header(header =>
-                                {
-                                    header.Cell().Text("Discípulo").Bold();
-                                    header.Cell().Text("Grado").Bold();
-                                    header.Cell().Text("Tipo Relación").Bold();
-                                });
-
-                                foreach (var d in hechicero.Discipulos)
-                                {
-                                    table.Cell().Text(d.NombreDiscipulo);
-                                    table.Cell().Text(d.GradoDiscipulo);
-                                    table.Cell().Text(d.TipoRelacion);
-                                }
-                            });
-                        }
-                        else
-                        {
-                            column.Item().Text("No tiene discípulos asignados");
-                        }
-
-                        column.Item().PaddingVertical(5).LineHorizontal(1);
+                            innerColumn.Item().PaddingVertical(10).LineHorizontal(1).LineColor(Colors.Grey.Lighten2);
+                        });
                     });
-                });
-            }
+                }
+            });
         }
     }
 }
