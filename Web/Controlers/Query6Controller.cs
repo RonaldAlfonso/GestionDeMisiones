@@ -30,7 +30,7 @@ public class Query6Controller : ControllerBase
 
         var document = new RelacionHechicerosDocument(data);
 
-        using var stream = new MemoryStream();
+        var stream = new MemoryStream();
         document.GeneratePdf(stream);
         stream.Position = 0;
 

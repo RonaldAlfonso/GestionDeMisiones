@@ -31,7 +31,7 @@ public class Query4Controller : ControllerBase
 
         var document = new EfectividadTecnicasDocument(data);
 
-        using var stream = new MemoryStream();
+        var stream = new MemoryStream();
         document.GeneratePdf(stream);
         stream.Position = 0;
 

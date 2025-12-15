@@ -31,7 +31,7 @@ public async Task<IActionResult> GetReporteEfectividad()
     var document = new EfectividadHechicerosDocument(data);
 
     // Crear un MemoryStream y generar el PDF allí
-    using var stream = new MemoryStream();
+    var stream = new MemoryStream();
     document.GeneratePdf(stream);
     stream.Position = 0; // resetear la posición antes de enviar
 
